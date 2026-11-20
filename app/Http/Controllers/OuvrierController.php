@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OuvrierFormRequest;
 use App\Http\Requests\OuvrierUpdateFormRequest;
-use App\Models\Entreprise;
 use App\Models\Ouvrier;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,8 +12,6 @@ use \App\Models\Departement;
 use \App\Models\Metier;
 use \App\Models\Region;
 use \App\Models\Domaine;
-use \App\Models\Diplome;
-use \App\Models\Portfolio;
 use \App\Models\Countries;
 
 
@@ -36,7 +33,6 @@ class OuvrierController extends Controller
         'region',
         'departement',
         'country',
-        'entrepriseS'
     ])->paginate(10);
     
         return view('ouvriers.ouvriers.index', [
@@ -53,13 +49,13 @@ class OuvrierController extends Controller
      */
     public function create()
     {
+        
         return view('ouvriers.ouvriers.create', [
             'countries' => Countries::all(),
             'regions' => Region::with('country')->get(),
             'departements' => Departement::all(),
-            'metiers' => Metier::pluck('name', 'id'),
-            'domaines' => Domaine::pluck('name', 'id'),
-            'diplomes' => Diplome::pluck('name', 'id')
+            'metiers' => Metier::pluck('nom', 'id'),
+            'domaines' => Domaine::pluck('nom', 'id'),
         ]);
     }
 
@@ -90,8 +86,8 @@ public function departementsByRegion(Request $request)
             $search = trim($search);
 
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('phone_number', 'like', '%' . $search . '%');
+                $query->where('nom', 'like', '%' . $search . '%')
+                    ->orWhere('telephone', 'like', '%' . $search . '%');
             });
         }
 
@@ -115,13 +111,6 @@ public function departementsByRegion(Request $request)
             $query->where('departement_id', $request->departement_id);
         }
 
-        if ($request->filled('phone_number')) {
-            $query->where(
-                'phone_number',
-                'like',
-                '%' . $request->phone_number . '%'
-            );
-        }
 
         $ouvriers = $query->with([
             'domaines',
@@ -129,7 +118,6 @@ public function departementsByRegion(Request $request)
             'region',
             'departement',
             'country',
-            'entrepriseS',
         ])->paginate(10);;
         $metiers = Metier::all();
         $departements = Departement::all();
@@ -145,58 +133,10 @@ public function departementsByRegion(Request $request)
     public function store(OuvrierFormRequest $request)
     {
         $data = $request->validated();
-        $uploadedImages = [];
-        // $photoProfile = $request->validated('photo');
-        if($request->hasFile('photo')){
-            $image = $request->file('photo');
-            $filename = $image->getClientOriginalName();
-            $imageName = time().'-'.uniqid().'_'.$filename;
-            $path = 'ouvrier_profile/' . $request->user()->id .'/';
-            $pathImage = $image->storeAs($path, $imageName);
-            
-            $data['photo'] = $pathImage;
-            dd($data['photo']);
-        }
         $data['user_id'] = Auth::user()->id;
         $ouvrier = Ouvrier::create($data);
-        $ouvrier->diplomes()->sync($request->validated('diplomes'));
         $ouvrier->metiers()->sync($request->validated('metiers'));
         $ouvrier->domaines()->sync($request->validated('domaines'));
-        
-        $entrepriseIds = [];
-
-        foreach ($request->entreprises as $name) {
-            if($name != null){
-                $entreprise = Entreprise::firstOrCreate([
-                    'name' => $name,
-                ]);
-                $entrepriseIds[] = $entreprise->id;
-            }
-        }
-
-        $ouvrier->entreprises()->sync($entrepriseIds);
-
-        if($request->hasFile('images')){
-            foreach ($request->file('images') as $image) {
-                $filename = $image->getClientOriginalName();
-                $imageName = time().'-'.uniqid().'_'.$filename;
-                $path = 'portfolios/' . $request->user()->id .'/';
-                $chemin = $image->storeAs($path, $imageName);
-                // $path = $image->store('portfolios', 'public');
-
-                $uploadedImages[] = $chemin;
-
-            }
-            if($uploadedImages != null){
-                
-                forEach($uploadedImages as $image){
-                    Portfolio::create([
-                        'image' => $image,
-                        'ouvrier_id' => $ouvrier->id,
-                    ]);
-                }
-            }
-        }
         
         return redirect()->route('ouvrier.index')->with('success', 'Ouvrier created successfully.');
     }
@@ -211,8 +151,6 @@ public function departementsByRegion(Request $request)
             'region',
             'departement',
             'country',
-            'entrepriseS',
-            'portfolios',
         ])->findOrFail($id);
         // dd($ouvrier);        
         
@@ -224,22 +162,18 @@ public function departementsByRegion(Request $request)
      */
     public function edit(string $id)
     {
-        $ouvrier = Ouvrier::findOrFail($id)->load(['region', 'departement', 'country', 'portfolios', 'entreprises']);
-        $selectedDiplomes = $ouvrier->diplomes->pluck('id');
+        $ouvrier = Ouvrier::findOrFail($id)->load(['region', 'departement', 'country']);
         $selectedmetiers = $ouvrier->metiers->pluck('id');
         $selectedDomaines = $ouvrier->domaines->pluck('id');
         $selectedCountry = $ouvrier->country->pluck('id');
         // dd($ouvrier);
         return view('ouvriers.ouvriers.edit', [
             'ouvrier' => $ouvrier,
-            'countries' => Countries::pluck('name', 'id'),
+            'countries' => Countries::pluck('nom', 'id'),
             'regions' => Region::all(),
             'departements' => Departement::all(),
-            'metiers' => Metier::pluck('name', 'id'),
-            'domaines' => Domaine::pluck('name', 'id'),
-            'diplomes' => Diplome::pluck('name', 'id'),
-            // 'entreprises' => Entreprise::pluck('name', 'id'),
-            'selectedDiplomes' => $selectedDiplomes,
+            'metiers' => Metier::pluck('nom', 'id'),
+            'domaines' => Domaine::pluck('nom', 'id'),
             'selectedDomaines' => $selectedDomaines,
             'selectedMetiers' => $selectedmetiers,
             'selectedCountry' => $selectedCountry
@@ -253,84 +187,12 @@ public function departementsByRegion(Request $request)
     {
         $dataOuvrier = $request->validated();
         $ouvrier = Ouvrier::findOrFail($id);
-        $ouvrier->diplomes()->sync($dataOuvrier['diplomes']);
-        if ($request->hasFile('photo')) {
-            $image = $request->file('photo');
-            $filename = $image->getClientOriginalName();
-            $imageName = time() . '-' . uniqid() . '_' . $filename;
-            $path = 'ouvrier_profile/' . $request->user()->id . '/';
-            $pathImage = $image->storeAs($path, $imageName);
-
-            $dataOuvrier['photo'] = $pathImage;
-            $request->files->remove('photo');
-            $request->merge(['photo' => $dataOuvrier['photo']]);
-        }
+        
         $ouvrier->update($request->only('name', 'country_id', 'region_id', 'departement_id', 'date_of_birth', 'phone_number', 'email', 'address', 'phone_number_2', 'numero_cni', 'photo', 'photo_cni','annees_experience', 'user_id'));
         $ouvrier->metiers()->sync($dataOuvrier['metiers']);
         $ouvrier->domaines()->sync($dataOuvrier['domaines']);
-        $entrepriseIds = [];
-        if($request->entreprises != null){
-            foreach ($request->entreprises as $name) {
-                if($name != null){
-                    $entreprise = Entreprise::firstOrCreate([
-                        'name' => $name,
-                    ]);
-                    $entrepriseIds[] = $entreprise->id;
-                }
-            }
-            $ouvrier->entreprises()->sync($entrepriseIds);
-        }
-        if ($request->filled('deleted_entreprises')) {
-            $ids = explode(',', $request->deleted_entreprises);
-            // dd($ids);
-            $ouvrier->entreprises()->detach($ids); // sync($ids);
-        }
-        $uploadedImages = [];
-
-        if($request->hasFile('images')){
-            foreach ($request->file('images') as $image) {
-            
-                $filename = $image->getClientOriginalName();
-                $path = 'portfolios/' . $request->user()->id .'/';
-                $imageName = time().'-'.uniqid().'_'.$filename;
-                $chemin = $image->storeAs($path, $imageName);
-                $uploadedImages[] = $chemin;
-
-            }
-            if($uploadedImages != null){
-                
-                forEach($uploadedImages as $image){
-                    Portfolio::create([
-                        'image' => $image,
-                        'ouvrier_id' => $ouvrier->id,
-                    ]);
-                }
-            }
-        }
         
         return redirect()->route('ouvrier.show', $ouvrier->id)->with('success', 'Ouvrier updated successfully.');
-    }
-
-
-    public function get_mon_compte(Request $request)
-    {
-        $ouvrier = $request->validate(
-        [
-            'telephone' => 'required', 'string',
-        ],
-
-        [
-            'telephone.required' => 'Le numéro de téléphone est obligatoire.',
-
-            'telephone.exists' => 'Ce numéro de téléphone n\'existe pas.',
-        ]
-
-);
-        $ouvrier = Ouvrier::where('phone_number', $request->telephone)->orWhere('phone_number_2', $request->telephone)->first();
-        if($request->telephone){
-            return $this->show($ouvrier->id);
-        }
-        return view('dashboard', ['message' => "Ce numero est invalide"]);
     }
     /**
      * Remove the specified resource from storage.

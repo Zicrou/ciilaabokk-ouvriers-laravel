@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use \App\Models\Metier;
+use \App\Models\Domaine;
 class MetierController extends Controller
 {
     /**
@@ -12,7 +13,7 @@ class MetierController extends Controller
     public function index()
     {
         return view('ouvriers.metiers.index', [
-            'metiers' => \App\Models\Metier::with('domaine')->get()
+            'metiers' => Metier::with('domaine')->get()
         ]);
     }
 
@@ -21,8 +22,9 @@ class MetierController extends Controller
      */
     public function create()
     {
-        return view('ouvriers.metiers.create', [
-            'domaines' => \App\Models\Domaine::all()
+        return view('ouvriers.metiers.form', [
+            'domaines' => Domaine::pluck('nom', 'id'),
+            'metier' => new Metier()
         ]);
     }
 
@@ -32,11 +34,11 @@ class MetierController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'nom' => ['required', 'string', 'max:255'],
             'domaine_id' => ['uuid', 'required', 'exists:domaines,id'],
         ]);
 
-        \App\Models\Metier::create($request->only('name', 'domaine_id'));
+        Metier::create($request->only('nom', 'domaine_id'));
 
         return redirect()->route('metier.index')->with('success', 'Metier created successfully.');
     }
@@ -54,8 +56,9 @@ class MetierController extends Controller
      */
     public function edit(string $id)
     {
-        $metier = \App\Models\Metier::findOrFail($id)->load('domaine');
-        return view('ouvriers.metiers.edit', ['metier' => $metier, 'domaines' => \App\Models\Domaine::all()]);
+        $metier = Metier::findOrFail($id)->load('domaine');
+        $domaines = Domaine::pluck('nom', 'id');
+        return view('ouvriers.metiers.form', ['metier' => $metier, 'domaines' => $domaines]);
     }
 
     /**
@@ -64,12 +67,12 @@ class MetierController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'nom' => ['required', 'string', 'max:255'],
             'domaine_id' => ['uuid', 'required', 'exists:domaines,id'],
         ]);
 
-        $metier = \App\Models\Metier::findOrFail($id);
-        $metier->update($request->only('name', 'domaine_id'));
+        $metier = Metier::findOrFail($id);
+        $metier->update($request->only('nom', 'domaine_id'));
 
         return redirect()->route('metier.index')->with('success', 'Metier updated successfully.');
     }
@@ -79,7 +82,7 @@ class MetierController extends Controller
      */
     public function destroy(string $id)
     {
-        $metier = \App\Models\Metier::findOrFail($id);
+        $metier = Metier::findOrFail($id);
         $metier->delete();
 
         return redirect()->route('metier.index')->with('success', 'Metier deleted successfully.');

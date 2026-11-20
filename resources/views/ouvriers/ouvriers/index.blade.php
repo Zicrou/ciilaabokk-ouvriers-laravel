@@ -38,27 +38,6 @@
 
                 <form action="{{ route('ouvrier.rechercher') }}" method="get">
                     <div class="row g-3">
-                        <div class="col-12">
-                            <label for="search" class="form-label fw-medium">Nom ou téléphone</label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-white" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                        <circle cx="11" cy="11" r="7"></circle>
-                                        <path stroke-linecap="round" d="m16 16 4 4"></path>
-                                    </svg>
-                                </span>
-                                <input
-                                    type="search"
-                                    name="search"
-                                    id="search"
-                                    class="form-control"
-                                    value="{{ request('search') }}"
-                                    placeholder="Ex. Amadou ou 77 000 00 00"
-                                    autocomplete="off"
-                                >
-                                <button type="submit" class="btn bg-color text-white px-4">Rechercher</button>
-                            </div>
-                        </div>
 
                         <div class="col-12 col-sm-6 col-lg-3">
                             <label for="region_id" class="form-label">Région</label>
@@ -66,7 +45,7 @@
                                 <option value="">Toutes les régions</option>
                                 @foreach($regions as $region)
                                     <option value="{{ $region->id }}" @selected(request('region_id') == $region->id)>
-                                        {{ $region->name }}
+                                        {{ $region->nom }}
                                     </option>
                                 @endforeach
                             </select>
@@ -78,7 +57,7 @@
                                 <option value="">Tous les départements</option>
                                 @foreach($departements as $departement)
                                     <option value="{{ $departement->id }}" @selected(request('departement_id') == $departement->id)>
-                                        {{ $departement->name }}
+                                        {{ $departement->nom }}
                                     </option>
                                 @endforeach
                             </select>
@@ -90,7 +69,7 @@
                                 <option value="">Tous les domaines</option>
                                 @foreach($domaines as $domaine)
                                     <option value="{{ $domaine->id }}" @selected(request('domaine_id') == $domaine->id)>
-                                        {{ $domaine->name }}
+                                        {{ $domaine->nom }}
                                     </option>
                                 @endforeach
                             </select>
@@ -102,7 +81,7 @@
                                 <option value="">Tous les métiers</option>
                                 @foreach($metiers as $metier)
                                     <option value="{{ $metier->id }}" @selected(request('metier_id') == $metier->id)>
-                                        {{ $metier->name }}
+                                        {{ $metier->nom }}
                                     </option>
                                 @endforeach
                             </select>
@@ -161,23 +140,23 @@
                                         @if($ouvrier->photo)
                                             <img
                                                 src="{{ asset('storage/' . $ouvrier->photo) }}"
-                                                alt="Photo de {{ $ouvrier->name }}"
+                                                alt="Photo de {{ $ouvrier->nom }}"
                                                 class="directory-avatar rounded-3 object-fit-cover flex-shrink-0"
                                             >
                                         @else
                                             <div class="directory-avatar rounded-3 flex-shrink-0 d-flex align-items-center justify-content-center bg-primary-subtle text-primary fw-bold fs-3">
-                                                {{ strtoupper(substr($ouvrier->name ?? 'O', 0, 1)) }}
+                                                {{ strtoupper(substr($ouvrier->nom ?? 'O', 0, 1)) }}
                                             </div>
                                         @endif
 
                                         <div class="directory-worker-info">
                                             <a href="{{ route('ouvrier.show', $ouvrier->id) }}" class="h5 fw-semibold text-dark text-decoration-none">
-                                                {{ $ouvrier->name }}
+                                                {{ $ouvrier->nom }}
                                             </a>
                                             <p class="text-secondary small mb-2">
-                                                {{ $ouvrier->departement?->name ?? 'Département non renseigné' }}
+                                                {{ $ouvrier->departement?->nom ?? 'Département non renseigné' }}
                                                 @if($ouvrier->region)
-                                                    · {{ $ouvrier->region->name }}
+                                                    · {{ $ouvrier->region->nom }}
                                                 @endif
                                             </p>
 
@@ -185,9 +164,9 @@
                                                 @forelse($ouvrier->metiers as $metier)
                                                     <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis fw-medium">
                                                         @if($metier->domaine)
-                                                            {{ $metier->domaine->name }} ·
+                                                            {{ $metier->domaine->nom }} ·
                                                         @endif
-                                                        {{ $metier->name }}
+                                                        {{ $metier->nom }}
                                                     </span>
                                                 @empty
                                                     <span class="text-secondary small">Aucun métier renseigné</span>
@@ -197,31 +176,19 @@
                                     </div>
 
                                     <div class="directory-worker-details d-flex flex-column gap-2">
-                                        @if($ouvrier->phone_number)
+                                        @if($ouvrier->telephone)
                                             <div>
                                                 <span class="text-secondary small d-block">Téléphone</span>
-                                                <a href="tel:{{ $ouvrier->phone_number }}" class="text-dark text-decoration-none fw-medium">
-                                                    {{ $ouvrier->phone_number }}
+                                                <a href="tel:{{ $ouvrier->telephone }}" class="text-dark text-decoration-none fw-medium">
+                                                    {{ $ouvrier->telephone }}
                                                 </a>
-                                                @if($ouvrier->phone_number_2)
-                                                    <span class="text-secondary small"> · {{ $ouvrier->phone_number_2 }}</span>
+                                                @if($ouvrier->telephone_2)
+                                                    <span class="text-secondary small"> · {{ $ouvrier->telephone_2 }}</span>
                                                 @endif
                                             </div>
                                         @endif
 
-                                        @if($ouvrier->annees_experience)
-                                            <div>
-                                                <span class="text-secondary small d-block">Expérience</span>
-                                                <span class="fw-medium">{{ $ouvrier->annees_experience }} ans</span>
-                                            </div>
-                                        @endif
-
-                                        @if($ouvrier->entrepriseS->isNotEmpty())
-                                            <div>
-                                                <span class="text-secondary small d-block">Entreprise(s)</span>
-                                                <span class="fw-medium">{{ $ouvrier->entrepriseS->pluck('name')->join(', ') }}</span>
-                                            </div>
-                                        @endif
+                                        
                                     </div>
 
                                     <div class="d-flex flex-row flex-lg-column gap-2 align-items-stretch justify-content-lg-center">
