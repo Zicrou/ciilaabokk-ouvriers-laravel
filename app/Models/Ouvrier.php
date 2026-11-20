@@ -54,4 +54,8 @@ class Ouvrier extends Model
     {
         return $this->belongsToMany(Entreprise::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

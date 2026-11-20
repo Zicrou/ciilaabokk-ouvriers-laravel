@@ -37,7 +37,7 @@ class OuvrierController extends Controller
         'departement',
         'country',
         'entrepriseS'
-    ])->get();
+    ])->paginate(10);
     
         return view('ouvriers.ouvriers.index', [
             'ouvriers' => $ouvriers,
@@ -130,7 +130,7 @@ public function departementsByRegion(Request $request)
             'departement',
             'country',
             'entrepriseS',
-        ])->get();
+        ])->paginate(10);;
         $metiers = Metier::all();
         $departements = Departement::all();
         $regions = Region::all();
@@ -149,10 +149,13 @@ public function departementsByRegion(Request $request)
         // $photoProfile = $request->validated('photo');
         if($request->hasFile('photo')){
             $image = $request->file('photo');
-            $path = $image->store('ouvrier_profile', 'public');
+            $filename = $image->getClientOriginalName();
+            $imageName = time().'-'.uniqid().'_'.$filename;
+            $path = 'ouvrier_profile/' . $request->user()->id .'/';
+            $pathImage = $image->storeAs($path, $imageName);
             
-            $data['photo'] = $path;
-            // dd($data['photo']);
+            $data['photo'] = $pathImage;
+            dd($data['photo']);
         }
         $data['user_id'] = Auth::user()->id;
         $ouvrier = Ouvrier::create($data);
@@ -175,10 +178,13 @@ public function departementsByRegion(Request $request)
 
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image) {
+                $filename = $image->getClientOriginalName();
+                $imageName = time().'-'.uniqid().'_'.$filename;
+                $path = 'portfolios/' . $request->user()->id .'/';
+                $chemin = $image->storeAs($path, $imageName);
+                // $path = $image->store('portfolios', 'public');
 
-            $path = $image->store('portfolios', 'public');
-
-            $uploadedImages[] = $path;
+                $uploadedImages[] = $chemin;
 
             }
             if($uploadedImages != null){
@@ -248,6 +254,17 @@ public function departementsByRegion(Request $request)
         $dataOuvrier = $request->validated();
         $ouvrier = Ouvrier::findOrFail($id);
         $ouvrier->diplomes()->sync($dataOuvrier['diplomes']);
+        if ($request->hasFile('photo')) {
+            $image = $request->file('photo');
+            $filename = $image->getClientOriginalName();
+            $imageName = time() . '-' . uniqid() . '_' . $filename;
+            $path = 'ouvrier_profile/' . $request->user()->id . '/';
+            $pathImage = $image->storeAs($path, $imageName);
+
+            $dataOuvrier['photo'] = $pathImage;
+            $request->files->remove('photo');
+            $request->merge(['photo' => $dataOuvrier['photo']]);
+        }
         $ouvrier->update($request->only('name', 'country_id', 'region_id', 'departement_id', 'date_of_birth', 'phone_number', 'email', 'address', 'phone_number_2', 'numero_cni', 'photo', 'photo_cni','annees_experience', 'user_id'));
         $ouvrier->metiers()->sync($dataOuvrier['metiers']);
         $ouvrier->domaines()->sync($dataOuvrier['domaines']);
@@ -272,10 +289,12 @@ public function departementsByRegion(Request $request)
 
         if($request->hasFile('images')){
             foreach ($request->file('images') as $image) {
-
-            $path = $image->store('portfolios', 'public');
-
-            $uploadedImages[] = $path;
+            
+                $filename = $image->getClientOriginalName();
+                $path = 'portfolios/' . $request->user()->id .'/';
+                $imageName = time().'-'.uniqid().'_'.$filename;
+                $chemin = $image->storeAs($path, $imageName);
+                $uploadedImages[] = $chemin;
 
             }
             if($uploadedImages != null){
@@ -288,6 +307,7 @@ public function departementsByRegion(Request $request)
                 }
             }
         }
+        
         return redirect()->route('ouvrier.show', $ouvrier->id)->with('success', 'Ouvrier updated successfully.');
     }
 

@@ -160,6 +160,8 @@
                     @else
                         <div class="row g-3">
                             @foreach($ouvrier->portfolios as $portfolio)
+                            @php
+                            @endphp
                                 <div class="col-12 col-sm-6 col-lg-4">
                                     <img
                                         src="{{ asset('storage/' . $portfolio->image) }}"

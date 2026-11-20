@@ -255,4 +255,7 @@
             </div>
         @endif
     </div>
+    <div class="my-4">
+        {{ $ouvriers->links() }}
+    </div>
 @endsection

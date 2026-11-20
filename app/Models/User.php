@@ -47,4 +47,8 @@ class User extends Authenticatable
             'phone_number' => 'string',
         ];
     }
+
+    public function ouvrier(){
+        return $this->hasOne(Ouvrier::class);
+    }
 }

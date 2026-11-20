@@ -46,6 +46,7 @@
                         @auth
                             <span class="text-secondary small px-lg-2">{{ auth()->user()->name }}</span>
                             <a href="{{ route('admin') }}" class="btn btn-outline-primary">Mon espace</a>
+                            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">Dashboard</a>
                         @else
                             <a href="{{ route('login') }}" class="btn btn-link text-decoration-none">Connexion</a>
                             <a href="{{ route('register') }}" class="btn bg-color text-white px-3">Créer un compte</a>
