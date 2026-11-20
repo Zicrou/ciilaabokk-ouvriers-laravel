@@ -31,12 +31,12 @@ class DiplomeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         \App\Models\Diplome::create($request->only('name'));
 
-        return redirect()->route('diplomes.index')->with('success', 'Diplome created successfully.');
+        return redirect()->route('diplome.index')->with('success', 'Diplome created successfully.');
     }
 
     /**
