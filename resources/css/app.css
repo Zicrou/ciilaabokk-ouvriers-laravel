@@ -1,3 +1,179 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.bg-color{
+    background-color: rgb(33 160 249);
+}
+
+.btn.bg-color {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #219ff4;
+    --bs-btn-border-color: #219ff4;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #1676c5;
+    --bs-btn-hover-border-color: #1676c5;
+    --bs-btn-focus-shadow-rgb: 33, 159, 244;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #1265a8;
+    --bs-btn-active-border-color: #1265a8;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #219ff4;
+    --bs-btn-disabled-border-color: #219ff4;
+}
+
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background: #f6f9fc;
+}
+
+.app-main {
+    flex: 1;
+}
+
+.site-navbar {
+    background: #fff;
+    border-bottom: 1px solid #e8eef5;
+}
+
+.site-navbar .navbar-brand {
+    color: #172b4d;
+    letter-spacing: -0.02em;
+}
+
+.site-navbar .nav-link {
+    color: #526174;
+    font-weight: 500;
+}
+
+.site-navbar .navbar-collapse {
+    visibility: visible;
+}
+
+.site-navbar .nav-link.active,
+.site-navbar .nav-link:hover {
+    color: #1676c5;
+}
+
+.site-brand-mark {
+    display: inline-flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: #219ff4;
+    color: #fff;
+    font-size: 1.15rem;
+}
+
+.home-hero {
+    overflow: hidden;
+    background: linear-gradient(125deg, #eaf5ff 0%, #f5faff 55%, #eef8ff 100%);
+}
+
+.home-feature-card {
+    border: 1px solid rgb(225 235 245 / 80%);
+}
+
+.home-feature-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    flex: 0 0 auto;
+}
+
+.home-step-number {
+    display: inline-flex;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #edf6ff;
+    color: #1676c5;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.home-search-form .form-control {
+    min-width: 0;
+}
+
+.site-footer {
+    border-top: 1px solid #e8eef5;
+    background: #fff;
+}
+
+.directory-avatar {
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+.directory-worker-info {
+    min-width: 0;
+}
+
+.directory-empty-icon {
+    width: 3.75rem;
+    height: 3.75rem;
+}
+
+.directory-profile-avatar {
+    width: 8rem;
+    height: 8rem;
+}
+
+.directory-details-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.directory-details-list dt {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.directory-details-list dd {
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+}
+
+.directory-details-list a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.directory-details-list a:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.directory-portfolio-image {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.directory-worker-card {
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.directory-worker-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.75rem 1.75rem rgb(20 37 63 / 9%) !important;
+}
+
+@media (min-width: 992px) {
+    .directory-worker-details {
+        min-width: 12rem;
+        max-width: 16rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .directory-worker-card {
+        transition: none;
+    }
+}

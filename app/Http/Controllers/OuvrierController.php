@@ -36,7 +36,7 @@ class OuvrierController extends Controller
         'region',
         'departement',
         'country',
-        'entreprises'
+        'entrepriseS'
     ])->get();
     
         return view('ouvriers.ouvriers.index', [
@@ -84,6 +84,17 @@ public function departementsByRegion(Request $request)
     {
         $query = Ouvrier::query();
 
+        $search = $request->query('search');
+
+        if (is_string($search) && trim($search) !== '') {
+            $search = trim($search);
+
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('phone_number', 'like', '%' . $search . '%');
+            });
+        }
+
         if ($request->filled('domaine_id')) {
             $query->whereHas('domaines', function ($q) use ($request) {
                 $q->where('domaines.id', $request->domaine_id);
@@ -118,6 +129,7 @@ public function departementsByRegion(Request $request)
             'region',
             'departement',
             'country',
+            'entrepriseS',
         ])->get();
         $metiers = Metier::all();
         $departements = Departement::all();
@@ -188,7 +200,14 @@ public function departementsByRegion(Request $request)
      */
     public function show($id)
     {
-        $ouvrier = Ouvrier::find($id)->load(['metiers.domaine', 'region', 'departement', 'country', 'portfolios']);
+        $ouvrier = Ouvrier::with([
+            'metiers.domaine',
+            'region',
+            'departement',
+            'country',
+            'entrepriseS',
+            'portfolios',
+        ])->findOrFail($id);
         // dd($ouvrier);        
         
         return view('ouvriers.ouvriers.show', compact('ouvrier'));

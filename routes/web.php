@@ -13,7 +13,7 @@ use \App\Http\Controllers\CountryController;
 $idRegex = '[0-9a-zA-Z\-]+';
 
 Route::get('/', function () {
-    return view('admin.admin');
+    return view('base');
 })->name('accueil');
 
 Route::get('/dashboard', function () {
@@ -30,7 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('departement', DepartementController::class);
     Route::resource('domaine', DomaineController::class);
     Route::resource('metier', MetierController::class);
-    Route::get('ouvrier/rechercher', [OuvrierController::class, 'rechercher'])->name('ouvrier.rechercher');
     Route::get('ouvrier/filtered', [OuvrierController::class, 'filtered'])->name('ouvrier.filtered');
     Route::get('mon_compte', [OuvrierController::class,'get_mon_compte'])->name('ouvrier.mon_compte');
     Route::get('/api/metier', [OuvrierController::class, 'metiersByDomaine']);
@@ -39,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('diplome', DiplomeController::class);
     
     });
+    Route::get('ouvrier/rechercher', [OuvrierController::class, 'rechercher'])->name('ouvrier.rechercher');
     Route::get('ouvrier', [OuvrierController::class, 'index'])->name('ouvrier.index');
     Route::get('ouvrier/{id}', [OuvrierController::class, 'show'])->name("ouvrier.show");
 
