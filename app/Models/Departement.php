@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Concerns\HasUuid;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Departement extends Model
 {
-    use SoftDeletes, HasUuid;
+    use HasFactory, HasUuid;
+    protected $table = 'departements';
 
-    protected $fillable = [
-        'nom',
-        'region_id'
-    ];
+    protected $fillable = ['name', 'region_id'];
 
-    public function region(){
+    public function region()
+    {
         return $this->belongsTo(Region::class);
-    }
-    public function ouvriers(){
-        return $this->hasMany(Ouvrier::class);
     }
 }

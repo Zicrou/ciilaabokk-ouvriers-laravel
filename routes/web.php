@@ -8,6 +8,7 @@ use \App\Http\Controllers\MetierController;
 use \App\Http\Controllers\RegionController;
 use \App\Http\Controllers\DepartementController;
 use \App\Http\Controllers\DiplomeController;
+use \App\Http\Controllers\CountryController;
 
 $idRegex = '[0-9a-zA-Z\-]+';
 
@@ -24,12 +25,13 @@ Route::get('admin', function () {
 })->middleware(['auth'])->name('admin');
 
 Route::middleware('auth')->group(function () {
+    Route::resource('country', CountryController::class);
     Route::resource('region', RegionController::class);
     Route::resource('departement', DepartementController::class);
     Route::resource('domaine', DomaineController::class);
     Route::resource('metier', MetierController::class);
-    Route::get('ouvriers/rechercher', [OuvrierController::class, 'rechercher'])->name('ouvrier.rechercher');
-    Route::get('ouvriers/filtered', [OuvrierController::class, 'filtered'])->name('ouvrier.filtered');
+    Route::get('ouvrier/rechercher', [OuvrierController::class, 'rechercher'])->name('ouvrier.rechercher');
+    Route::get('ouvrier/filtered', [OuvrierController::class, 'filtered'])->name('ouvrier.filtered');
     Route::get('mon_compte', [OuvrierController::class,'get_mon_compte'])->name('ouvrier.mon_compte');
     Route::get('/api/metier', [OuvrierController::class, 'metiersByDomaine']);
     Route::get('/api/departement', [OuvrierController::class, 'departementsByRegion']);

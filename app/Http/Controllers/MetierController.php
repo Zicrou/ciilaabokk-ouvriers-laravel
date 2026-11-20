@@ -1,58 +1,87 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\MetierFormRequest;
+
 use Illuminate\Http\Request;
-use App\Models\Domaine;
-use App\Models\Metier;
+
 class MetierController extends Controller
 {
-    public function index(){
-        $metiers = Metier::all();
-        return view("ouvriers.metiers.index", [
-            "metiers" => $metiers,
-        ]);
-    }
-
-    public function create(){
-        $metier = new metier();
-        $domaines = Domaine::all();
-        return view('ouvriers.metiers.form', [
-            'metier' => $metier,
-            'domaines' => $domaines,
-        ]);
-    }
-
-    public function store(MetierFormRequest $request){
-        try{
-            $metier = Metier::create($request->validated());
-            $domaine = Metier::create($request->validated());
-            return to_route('metier.index')->with('success', 'Le metier a été créé');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-
-    public function edit(Metier $metier){
-        $domaines = Domaine::all();
-        return view('ouvriers.metiers.form', [
-            'metier' => $metier, 
-            'domaines' => $domaines
-        ]);
-    }
-
-    public function update(MetierFormRequest $request, Metier $metier){
-        try{
-            $metier->update($request->validated());
-            return to_route('metier.index')->with('success', 'Le metier a été modifié');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-            
-    public function destroy(Metier $metier)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
+        return view('ouvriers.metiers.index', [
+            'metiers' => \App\Models\Metier::with('domaine')->get()
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('ouvriers.metiers.create', [
+            'domaines' => \App\Models\Domaine::all()
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'domaine_id' => ['uuid', 'required', 'exists:domaines,id'],
+        ]);
+
+        \App\Models\Metier::create($request->only('name', 'domaine_id'));
+
+        return redirect()->route('metier.index')->with('success', 'Metier created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $metier = \App\Models\Metier::findOrFail($id)->load('domaine');
+        return view('ouvriers.metiers.edit', ['metier' => $metier, 'domaines' => \App\Models\Domaine::all()]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'domaine_id' => ['uuid', 'required', 'exists:domaines,id'],
+        ]);
+
+        $metier = \App\Models\Metier::findOrFail($id);
+        $metier->update($request->only('name', 'domaine_id'));
+
+        return redirect()->route('metier.index')->with('success', 'Metier updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $metier = \App\Models\Metier::findOrFail($id);
         $metier->delete();
-        return to_route('metier.index')->with('success', 'Le metier a été supprimé');
+
+        return redirect()->route('metier.index')->with('success', 'Metier deleted successfully.');
     }
 }

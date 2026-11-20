@@ -4,7 +4,7 @@
     <h1 class="text-center">Modifier un pays</h1>
     <div class="card">
         <div class="card-body">
-            <form action="{{ route("countries.update", $country->id) }}" method="post">
+            <form action="{{ route("country.update", ['country' => $country->id]) }}" method="post">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">

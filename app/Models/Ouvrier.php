@@ -13,18 +13,12 @@ class Ouvrier extends Model
     protected $table = 'ouvriers';
 
 
-    protected $fillable = [
-        'nom',
-        'region_id',
-        'departement_id',
-        'telephone',
-        'email',
-        'address',
-        'telephone_2',
-        'photo',
-        'annees_experience',
-        'entreprises',
-    ];
+    protected $fillable = ['name', 'date_of_birth', 'country_id', 'region_id', 'departement_id', 'photo', 'phone_number', 'email', 'address', 'phone_number_2', 'photo_cni', 'numero_cni', 'annees_experience', 'user_id'];
+
+    public function country()
+    {
+        return $this->belongsTo(Countries::class);
+    }
 
     public function region()
     {
@@ -36,9 +30,14 @@ class Ouvrier extends Model
         return $this->belongsTo(Departement::class);
     }
 
+    public function domaines()
+    {
+        return $this->belongsToMany(Domaine::class );
+    }
+
     public function metiers()
     {
-        return $this->belongsToMany(Metier::class, 'ouvrier_metier');
+        return $this->belongsToMany(Metier::class );
     }
 
     public function portfolios()
@@ -51,7 +50,7 @@ class Ouvrier extends Model
         return $this->belongsToMany(Diplome::class);
     }
 
-    public function entreprises()
+    public function entrepriseS()
     {
         return $this->belongsToMany(Entreprise::class);
     }

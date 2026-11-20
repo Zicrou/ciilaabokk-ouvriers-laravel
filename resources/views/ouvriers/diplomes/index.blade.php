@@ -7,7 +7,7 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Nom</th>
+                        <th>Name</th>
                         
                         <th class="text-end">Actions</th>
                     </tr>
@@ -15,7 +15,7 @@
                 <tbody>
                     @foreach($diplomes as $diplome)
                         <tr>
-                            <td>{{ $diplome->nom }}</td> 
+                            <td>{{ $diplome->name }}</td> 
                             <td class="text-end">
                                 <a href="{{ route("diplome.edit", $diplome->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <form action="{{ route("diplome.destroy", $diplome->id) }}" method="post" style="display: inline;">

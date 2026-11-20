@@ -1,54 +1,89 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\RegionFormRequest;
+
 use Illuminate\Http\Request;
-use App\Models\Region;
+use \App\Models\Region;
+use \App\Models\Country;
 class RegionController extends Controller
 {
-    public function index(){
-        $regions = Region::all();
-        return view("ouvriers.regions.index", [
-            "regions" => $regions,
-        ]);
-    }
-
-    public function create(){
-        $region = new Region();
-        return view('ouvriers.regions.form', [
-            'region' => $region,
-        ]);
-    }
-
-    public function store(RegionFormRequest $request){
-        $validated = $request->validated();
-        try{
-            $region = Region::create($validated);
-            return to_route('region.index')->with('success', 'La region a été créée');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-
-    public function edit(Region $region){
-        return view('ouvriers.regions.form', [
-            'region' => $region, 
-        ]);
-    }
-
-    public function update(RegionFormRequest $request, Region $region){
-        $validated = $request->validated();
-        try{
-            $region->update($request->validated());
-            return to_route('region.index')->with('success', 'La region a été modifiée');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-            
-    public function destroy(Region $region)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
+        // dd(Region::with('country')->get());
+        return view('ouvriers.regions.index', [
+            'regions' => Region::with('country')->get()
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('ouvriers.regions.create', [
+            'countries' => \App\Models\Countries::pluck('name', 'id')
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'country_id' => ['uuid','required', 'exists:countries,id'],
+        ]);
+
+        Region::create($request->only('name', 'country_id'));
+
+        return redirect()->route('region.index')->with('success', 'Region created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $region = Region::findOrFail($id);
+        return view('ouvriers.regions.edit', ['region' => $region, 'countries' => \App\Models\Countries::all()]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],            
+            'country_id' => ['uuid','required', 'exists:countries,id'],
+        ]);
+
+        $region = Region::findOrFail($id);
+        $region->update($request->only('name', 'country_id'));
+
+        return redirect()->route('region.index')->with('success', 'Region updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $region = Region::findOrFail($id);
         $region->delete();
-        return to_route('region.index')->with('success', 'La regio a été supprimée');
+
+        return redirect()->route('region.index')->with('success', 'Region deleted successfully.');
     }
 }

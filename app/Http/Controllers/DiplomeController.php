@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use \App\Models\Diplome;
+
 
 class DiplomeController extends Controller 
 {
@@ -13,18 +13,16 @@ class DiplomeController extends Controller
     public function index()
     {
         return view('ouvriers.diplomes.index', [
-            'diplomes' => Diplome::all(),
+            'diplomes' => \App\Models\Diplome::all(),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-   public function create(){
-        $diplome = new Diplome();
-        return view('ouvriers.diplomes.form', [
-            'diplome' => $diplome,
-        ]);
+    public function create()
+    {
+        return view('ouvriers.diplomes.create');
     }
 
     /**
@@ -33,12 +31,12 @@ class DiplomeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nom' => ['required','string'],
+            'name' => 'required|string|max:255',
         ]);
 
-        Diplome::create($request->only('nom'));
+        \App\Models\Diplome::create($request->only('name'));
 
-        return redirect()->route('diplome.index')->with('success', 'Diplome créér avec succés.');
+        return redirect()->route('diplomes.index')->with('success', 'Diplome created successfully.');
     }
 
     /**
@@ -54,8 +52,8 @@ class DiplomeController extends Controller
      */
     public function edit(string $id)
     {
-        $diplome = Diplome::findOrFail($id);
-        return view('ouvriers.diplomes.form', compact('diplome'));
+        $diplome = \App\Models\Diplome::findOrFail($id);
+        return view('ouvriers.diplomes.edit', compact('diplome'));
     }
 
     /**
@@ -64,13 +62,13 @@ class DiplomeController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'nom' => ['required','string'],
+            'name' => 'required|string|max:255',
         ]);
 
-        $diplome = Diplome::findOrFail($id);
-        $diplome->update($request->only('nom'));
+        $diplome = \App\Models\Diplome::findOrFail($id);
+        $diplome->update($request->only('name'));
 
-        return redirect()->route('diplome.index')->with('success', 'Diplome mise à jour.');
+        return redirect()->route('diplomes.index')->with('success', 'Diplome updated successfully.');
     }
 
     /**
@@ -78,9 +76,9 @@ class DiplomeController extends Controller
      */
     public function destroy(string $id)
     {
-        $diplome = Diplome::findOrFail($id);
+        $diplome = \App\Models\Diplome::findOrFail($id);
         $diplome->delete();
 
-        return redirect()->route('diplome.index')->with('success', 'Diplome supprimé avec succés.');
+        return redirect()->route('diplomes.index')->with('success', 'Diplome deleted successfully.');
     }
 }

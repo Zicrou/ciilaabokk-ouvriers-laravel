@@ -4,7 +4,7 @@
     <h1 class="text-center">Modifier un ouvrier</h1>
     <div class="card">
         <div class="card-body">
-            <form action="{{ route("ouvriers.update", $ouvrier->id) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route("ouvrier.update", $ouvrier->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
@@ -149,7 +149,7 @@
         </div>
     </div>
     <div class="mt-4">
-        <a href="{{ route('ouvriers.liste') }}" class="btn btn-secondary">
+        <a href="{{ route('ouvrier.index') }}" class="btn btn-secondary">
             Retour
         </a>
     </div>

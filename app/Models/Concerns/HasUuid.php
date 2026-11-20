@@ -2,26 +2,20 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Concerns\HasUniqueStringIds;
 use Illuminate\Support\Str;
 
 trait HasUuid
 {
-    protected static function bootHasUuid()
+    use HasUniqueStringIds;
+
+    public function newUniqueId(): string
     {
-        static::creating(function ($model) {
-            if (! $model->getKey()) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
-        });
+        return (string) Str::uuid();
     }
 
-    public function getIncrementing()
+    protected function isValidUniqueId($value): bool
     {
-        return false;
-    }
-
-    public function getKeyType()
-    {
-        return 'string';
+        return Str::isUuid($value);
     }
 }

@@ -46,7 +46,10 @@
             {{-- Login And Registration button --}}
             <li class="nav-item">
                 @auth
-                    <a href="{{ route("dashboard")}}" class="bg-info btn mx-2 px-4 link-underline-info text-white fs-6 nav-link">{{ \Illuminate\Support\Facades\Auth::user()->name }}</a>  
+                    <div class="d-flex">
+                      <a href="{{ route("dashboard")}}" class="bg-info btn mx-2 px-4 link-underline-info text-white fs-6 nav-link">{{ Auth::user()->name }}</a>  
+                      <a href="{{ route("admin")}}" class="bg-info btn mx-2 px-4 link-underline-info text-white fs-6 nav-link">Admin</a>  
+                    </div>
                 @endauth
                 @guest
                     <a href="{{ route("login")}}" @class(["nav-link", "bg-info btn","mx-2 px-4","link-underline-info", "text-white", "fs-5", "active" => str_contains($route, 'login.')]) aria-current="page">Se connecter</a>

@@ -1,52 +1,82 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\DomaineFormRequest;
+
 use Illuminate\Http\Request;
-use App\Models\Domaine;
+
 class DomaineController extends Controller
 {
-    public function index(){
-        $domaines = Domaine::all();
-        return view("ouvriers.domaines.index", [
-            "domaines" => $domaines,
-        ]);
-    }
-
-    public function create(){
-        $domaine = new Domaine();
-        return view('ouvriers.domaines.form', [
-            'domaine' => $domaine,
-        ]);
-    }
-
-    public function store(DomaineFormRequest $request){
-        try{
-            $domaine = Domaine::create($request->validated());
-            return to_route('domaine.index')->with('success', 'Le domaine a été créé');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-
-    public function edit(Domaine $domaine){
-        return view('ouvriers.domaines.form', [
-            'domaine' => $domaine, 
-        ]);
-    }
-
-    public function update(DomaineFormRequest $request, Domaine $domaine){
-        try{
-            $domaine->update($request->validated());
-            return to_route('domaine.index')->with('success', 'Le domaine a été modifié');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-            
-    public function destroy(Domaine $domaine)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
+        return view('ouvriers.domaines.index', [
+            'domaines' => \App\Models\Domaine::all()
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('ouvriers.domaines.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        \App\Models\Domaine::create($request->only('name'));
+
+        return redirect()->route('domaine.index')->with('success', 'Domaine created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $domaine = \App\Models\Domaine::findOrFail($id);
+        return view('ouvriers.domaines.edit', compact('domaine'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+        $domaine = \App\Models\Domaine::findOrFail($id);
+        $domaine->update($request->only('name'));
+
+        return redirect()->route('domaine.index')->with('success', 'Domaine updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $domaine = \App\Models\Domaine::findOrFail($id);
         $domaine->delete();
-        return to_route('domaine.index')->with('success', 'Le domaine a été supprimé');
+
+        return redirect()->route('domaine.index')->with('success', 'Domaine deleted successfully.');
     }
 }

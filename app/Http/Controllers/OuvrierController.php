@@ -1,27 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\OuvrierFormRequest;
-use Illuminate\Http\Request;
-use App\Models\Domaine;
-use App\Models\Metier;
-use App\Models\Ouvrier;
-use App\Models\Departement;
-use App\Models\Region;
+use App\Http\Requests\OuvrierUpdateFormRequest;
 use App\Models\Entreprise;
+use App\Models\Ouvrier;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use \App\Models\Departement;
+use \App\Models\Metier;
+use \App\Models\Region;
+use \App\Models\Domaine;
+use \App\Models\Diplome;
+use \App\Models\Portfolio;
+use \App\Models\Countries;
+
+
+
 class OuvrierController extends Controller
 {
-    public function index(){
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {   
         $departements = Departement::all();
         $metiers = Metier::all();
         $regions = Region::all();
         $domaines = Domaine::all();
-        $ouvriers = Ouvrier::query()->with([
-            'metiers.domaine',
-            'region',
-            'departement',
-        ])->get();
-        return view("ouvrier.index", [
+        $ouvriers = Ouvrier::query()
+        ->with([
+        'metiers.domaine',
+        'region',
+        'departement',
+        'country',
+        'entreprises'
+    ])->get();
+    
+        return view('ouvriers.ouvriers.index', [
             'ouvriers' => $ouvriers,
             'departements' => $departements,
             'metiers' => $metiers,
@@ -30,16 +48,22 @@ class OuvrierController extends Controller
         ]);
     }
 
-    public function create(){
-        return view('ouvriers.ouvriers.form', [
-            'regions' => Region::all(),
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('ouvriers.ouvriers.create', [
+            'countries' => Countries::all(),
+            'regions' => Region::with('country')->get(),
             'departements' => Departement::all(),
-            'metiers' => Metier::pluck('nom', 'id'),
-            'domaines' => Domaine::pluck('nom', 'id'),
+            'metiers' => Metier::pluck('name', 'id'),
+            'domaines' => Domaine::pluck('name', 'id'),
+            'diplomes' => Diplome::pluck('name', 'id')
         ]);
     }
 
-    public function metiersParDomaine(Request $request)
+    public function metiersByDomaine(Request $request)
     {
         if ($request->domaine_id == null || $request->domaine_id == ""){
             return Metier::all();
@@ -47,15 +71,16 @@ class OuvrierController extends Controller
         return Metier::where('domaine_id',$request->domaine_id)->get();
     }
 
-public function departementsParRegion(Request $request)
+public function departementsByRegion(Request $request)
     {
         if($request->region_id == null || $request->region_id == ""){
             return Departement::all();
         }
         return Departement::where('region_id',$request->region_id)->get();
     }
-    // Recherche Ouvrier
-    public function rechercher(Request $request)
+    
+
+  public function rechercher(Request $request)
     {
         $query = Ouvrier::query();
 
@@ -79,42 +104,136 @@ public function departementsParRegion(Request $request)
             $query->where('departement_id', $request->departement_id);
         }
 
+        if ($request->filled('phone_number')) {
+            $query->where(
+                'phone_number',
+                'like',
+                '%' . $request->phone_number . '%'
+            );
+        }
 
         $ouvriers = $query->with([
             'domaines',
             'metiers.domaine',
             'region',
             'departement',
+            'country',
         ])->get();
         $metiers = Metier::all();
         $departements = Departement::all();
         $regions = Region::all();
         $domaines = Domaine::all();
 
-        return view('ouvriers.index', ['ouvriers' => $ouvriers, 'departements' => $departements, 'metiers' => $metiers, 'regions' => $regions, 'domaines' => $domaines]);
+        return view('ouvriers.ouvriers.index', ['ouvriers' => $ouvriers, 'departements' => $departements, 'metiers' => $metiers, 'regions' => $regions, 'domaines' => $domaines]);
     }
 
-
-    public function store(OuvrierFormRequest $request){
-        try{
-            $data = $request->validated();
-            $uploadedImages = [];
-            // $photoProfile = $request->validated('photo');
-            if($request->hasFile('photo')){
-                $image = $request->file('photo');
-                $path = $image->store('ouvrier_profile', 'public');
-                
-                $data['photo'] = $path;
-                // dd($data['photo']);
-            }
-            $data['user_id'] = $request->user()->id;
-            $ouvrier = \App\Models\Ouvrier::create($data);
-            $ouvrier->diplomes()->sync($request->validated('diplomes'));
-            $ouvrier->metiers()->sync($request->validated('metiers'));
-            $ouvrier->domaines()->sync($request->validated('domaines'));
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(OuvrierFormRequest $request)
+    {
+        $data = $request->validated();
+        $uploadedImages = [];
+        // $photoProfile = $request->validated('photo');
+        if($request->hasFile('photo')){
+            $image = $request->file('photo');
+            $path = $image->store('ouvrier_profile', 'public');
             
-            $entrepriseIds = [];
+            $data['photo'] = $path;
+            // dd($data['photo']);
+        }
+        $data['user_id'] = Auth::user()->id;
+        $ouvrier = Ouvrier::create($data);
+        $ouvrier->diplomes()->sync($request->validated('diplomes'));
+        $ouvrier->metiers()->sync($request->validated('metiers'));
+        $ouvrier->domaines()->sync($request->validated('domaines'));
+        
+        $entrepriseIds = [];
 
+        foreach ($request->entreprises as $name) {
+            if($name != null){
+                $entreprise = Entreprise::firstOrCreate([
+                    'name' => $name,
+                ]);
+                $entrepriseIds[] = $entreprise->id;
+            }
+        }
+
+        $ouvrier->entreprises()->sync($entrepriseIds);
+
+        if($request->hasFile('images')){
+            foreach ($request->file('images') as $image) {
+
+            $path = $image->store('portfolios', 'public');
+
+            $uploadedImages[] = $path;
+
+            }
+            if($uploadedImages != null){
+                
+                forEach($uploadedImages as $image){
+                    Portfolio::create([
+                        'image' => $image,
+                        'ouvrier_id' => $ouvrier->id,
+                    ]);
+                }
+            }
+        }
+        
+        return redirect()->route('ouvrier.index')->with('success', 'Ouvrier created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        $ouvrier = Ouvrier::find($id)->load(['metiers.domaine', 'region', 'departement', 'country', 'portfolios']);
+        // dd($ouvrier);        
+        
+        return view('ouvriers.ouvriers.show', compact('ouvrier'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $ouvrier = Ouvrier::findOrFail($id)->load(['region', 'departement', 'country', 'portfolios', 'entreprises']);
+        $selectedDiplomes = $ouvrier->diplomes->pluck('id');
+        $selectedmetiers = $ouvrier->metiers->pluck('id');
+        $selectedDomaines = $ouvrier->domaines->pluck('id');
+        $selectedCountry = $ouvrier->country->pluck('id');
+        // dd($ouvrier);
+        return view('ouvriers.ouvriers.edit', [
+            'ouvrier' => $ouvrier,
+            'countries' => Countries::pluck('name', 'id'),
+            'regions' => Region::all(),
+            'departements' => Departement::all(),
+            'metiers' => Metier::pluck('name', 'id'),
+            'domaines' => Domaine::pluck('name', 'id'),
+            'diplomes' => Diplome::pluck('name', 'id'),
+            // 'entreprises' => Entreprise::pluck('name', 'id'),
+            'selectedDiplomes' => $selectedDiplomes,
+            'selectedDomaines' => $selectedDomaines,
+            'selectedMetiers' => $selectedmetiers,
+            'selectedCountry' => $selectedCountry
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(OuvrierUpdateFormRequest $request, string $id)
+    {
+        $dataOuvrier = $request->validated();
+        $ouvrier = Ouvrier::findOrFail($id);
+        $ouvrier->diplomes()->sync($dataOuvrier['diplomes']);
+        $ouvrier->update($request->only('name', 'country_id', 'region_id', 'departement_id', 'date_of_birth', 'phone_number', 'email', 'address', 'phone_number_2', 'numero_cni', 'photo', 'photo_cni','annees_experience', 'user_id'));
+        $ouvrier->metiers()->sync($dataOuvrier['metiers']);
+        $ouvrier->domaines()->sync($dataOuvrier['domaines']);
+        $entrepriseIds = [];
+        if($request->entreprises != null){
             foreach ($request->entreprises as $name) {
                 if($name != null){
                     $entreprise = Entreprise::firstOrCreate([
@@ -123,46 +242,65 @@ public function departementsParRegion(Request $request)
                     $entrepriseIds[] = $entreprise->id;
                 }
             }
-
             $ouvrier->entreprises()->sync($entrepriseIds);
+        }
+        if ($request->filled('deleted_entreprises')) {
+            $ids = explode(',', $request->deleted_entreprises);
+            // dd($ids);
+            $ouvrier->entreprises()->detach($ids); // sync($ids);
+        }
+        $uploadedImages = [];
 
-            if($request->hasFile('images')){
-                foreach ($request->file('images') as $image) {
+        if($request->hasFile('images')){
+            foreach ($request->file('images') as $image) {
 
-                $path = $image->storeAs('portfolios/'. $request->user()->id . '/', 'public');
+            $path = $image->store('portfolios', 'public');
 
-                $uploadedImages[] = $path;
+            $uploadedImages[] = $path;
 
-                }
-                
             }
-            return redirect()->route('ouvriers.index')->with('success', 'Ouvrier created successfully.');
-        }catch(\Throwable $e){
-            report($e);
+            if($uploadedImages != null){
+                
+                forEach($uploadedImages as $image){
+                    Portfolio::create([
+                        'image' => $image,
+                        'ouvrier_id' => $ouvrier->id,
+                    ]);
+                }
+            }
         }
+        return redirect()->route('ouvrier.show', $ouvrier->id)->with('success', 'Ouvrier updated successfully.');
     }
 
-    public function edit(Metier $metier){
-        $domaines = Domaine::all();
-        return view('metier.form', [
-            'metier' => $metier, 
-            'domaines' => $domaines
-        ]);
-    }
 
-    public function update(MetierFormRequest $request, Domaine $domaine){
-        try{
-            $domaine->update($request->validated());
-            return to_route('domaine.index')->with('success', 'Le domaine a été modifié');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-            
-    public function destroy(Domaine $domaine)
+    public function get_mon_compte(Request $request)
     {
-        $domaine->delete();
-        return to_route('domaine.index')->with('success', 'Le domaine a été supprimé');
+        $ouvrier = $request->validate(
+        [
+            'telephone' => 'required', 'string',
+        ],
+
+        [
+            'telephone.required' => 'Le numéro de téléphone est obligatoire.',
+
+            'telephone.exists' => 'Ce numéro de téléphone n\'existe pas.',
+        ]
+
+);
+        $ouvrier = Ouvrier::where('phone_number', $request->telephone)->orWhere('phone_number_2', $request->telephone)->first();
+        if($request->telephone){
+            return $this->show($ouvrier->id);
+        }
+        return view('dashboard', ['message' => "Ce numero est invalide"]);
+    }
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $ouvrier = Ouvrier::findOrFail($id);
+        $ouvrier->delete();
+
+        return redirect()->route('ouvrier.index')->with('success', 'Ouvrier deleted successfully.');
     }
 }
-

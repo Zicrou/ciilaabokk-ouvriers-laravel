@@ -1,57 +1,87 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\DepartementformRequest;
+
 use Illuminate\Http\Request;
-use App\Models\Departement;
-use App\Models\Region;
+
 class DepartementController extends Controller
 {
-    public function index(){
-        $departements = Departement::all();
-        return view("ouvriers.departements.index", [
-            "departements" => $departements,
-        ]);
-    }
-
-    public function create(){
-        $departement = new Departement();
-        $regions = Region::all();
-        return view('ouvriers.departements.form', [
-            'departement' => $departement,
-            'regions' => $regions,
-        ]);
-    }
-
-    public function store(DepartementFormRequest $request){
-        try{
-            $departement = Departement::create($request->validated());
-            return to_route('departement.index')->with('success', 'Le departement a été créé');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-
-    public function edit(Departement $departement){
-        $regions = Region::all();
-        return view('ouvriers.departements.form', [
-            'departement' => $departement, 
-            'regions' => $regions
-        ]);
-    }
-
-    public function update(DepartementFormRequest $request, Departement $departement){
-        try{
-            $departement->update($request->validated());
-            return to_route('departement.index')->with('success', 'Le departement a été modifié');
-        }catch(\Throwable $e){
-            report($e);
-        }
-    }
-            
-    public function destroy(Departement $departement)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
+        return view('ouvriers.departements.index', [
+            'departements' => \App\Models\Departement::with('region')->get()
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('ouvriers.departements.create', [
+            'regions' => \App\Models\Region::pluck('name', 'id'),
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'region_id' => ['uuid', 'required', 'exists:regions,id'],
+        ]);
+
+        \App\Models\Departement::create($request->only('name', 'region_id'));
+
+        return redirect()->route('departement.index')->with('success', 'Departement created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $departement = \App\Models\Departement::findOrFail($id);
+        return view('ouvriers.departements.edit', ['departement' => $departement, 'regions' => \App\Models\Region::all()]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'name' => ['required','string','max:255'],
+            'region_id' => ['uuid', 'required','exists:regions,id'],
+        ]);
+
+        $departement = \App\Models\Departement::findOrFail($id);
+        $departement->update($request->only('name', 'region_id'));
+
+        return redirect()->route('departement.index')->with('success', 'Departement updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $departement = \App\Models\Departement::findOrFail($id);
         $departement->delete();
-        return to_route('departement.index')->with('success', 'Le departement a été supprimé');
+
+        return redirect()->route('departement.index')->with('success', 'Departement deleted successfully.');
     }
 }

@@ -4,7 +4,7 @@
     <h1 class="text-center">Ajouter un pays</h1>
     <div class="card">
         <div class="card-body">
-            <form action="{{ route("countries.store")}}" method="post">
+            <form action="{{ route("country.store")}}" method="post">
                 @csrf
                 <div class="mb-3">
                     <label for="name" class="form-label">Nom du pays</label>

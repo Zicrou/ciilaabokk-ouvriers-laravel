@@ -9,14 +9,16 @@
                     <tr>
                         <th>Name</th>
                         <th>Region</th>
+                        <th>Country</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($departements as $departement)
                         <tr>
-                            <td>{{ $departement->nom }}</td> 
-                            <td>{{ $departement->region->nom }}</td>
+                            <td>{{ $departement->name }}</td> 
+                            <td>{{ $departement->region->name }}</td>
+                            <td>{{ $departement->region->country->name }}</td>
                             <td class="text-end">
                                 <a href="{{ route("departement.edit", $departement->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <form action="{{ route("departement.destroy", $departement->id) }}" method="post" style="display: inline;">

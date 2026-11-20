@@ -7,13 +7,13 @@
             <h1>Rechercher d'ouvriers</h1>
         </div>
         <div class="col-5 d-flex flex-row-reverse">
-            <span class="h1 text-center"></span> <a href="{{ route("ouvriers.create") }}" class="h1 btn btn-primary">Ajouter un ouvrier</a>
+            <span class="h1 text-center"></span> <a href="{{ route("ouvrier.create") }}" class="h1 btn btn-primary">Ajouter un ouvrier</a>
         </div>
     </div>
 
   <!-- SEARCH FORM -->
   <div class="card mb-5">
-        <form action="{{ route("ouvriers.rechercher") }}" method="get" style="display: inline; margin-left: -20px;" class="">
+        <form action="{{ route("ouvrier.rechercher") }}" method="get" style="display: inline; margin-left: -20px;" class="">
             @csrf
             <div class="row d-flex m-3 justify-content-center">
                 <div class="form-group col-lg-4">
@@ -75,7 +75,7 @@
                         Rechercher
                     </button>
 
-                    <a href="{{ route('ouvriers.liste') }}"
+                    <a href="{{ route('ouvrier.index') }}"
                     class="btn btn-secondary w-100">
                         Réinitialiser
                     </a>
@@ -153,8 +153,8 @@
                             <a href="{{ route("ouvrier.show", $ouvrier->id) }}" class=" btn btn-sm btn-outline-info col-3 col-sm-3 col-lg-3">Show</a>
                             @auth
                                 @if (Auth()->user()->id == $ouvrier->user_id)
-                                    <a href="{{ route("ouvriers.edit", $ouvrier) }}" class=" btn btn-sm btn-outline-primary col-3 col-sm-3 col-lg-3">Edit</a>
-                                    <form action="{{ route("ouvriers.destroy", $ouvrier) }}" method="post" style="display: inline; margin-left: -1px;" class="col-3 col-sm-3 col-lg-3">
+                                    <a href="{{ route("ouvrier.edit", $ouvrier) }}" class=" btn btn-sm btn-outline-primary col-3 col-sm-3 col-lg-3">Edit</a>
+                                    <form action="{{ route("ouvrier.destroy", $ouvrier) }}" method="post" style="display: inline; margin-left: -1px;" class="col-3 col-sm-3 col-lg-3">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>

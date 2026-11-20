@@ -15,7 +15,7 @@
                 <tbody>
                     @foreach($domaines as $domaine)
                         <tr>
-                            <td>{{ $domaine->nom }}</td> 
+                            <td>{{ $domaine->name }}</td> 
                             <td class="text-end">
                                 <a href="{{ route("domaine.edit", $domaine->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <form action="{{ route("domaine.destroy", $domaine->id) }}" method="post" style="display: inline;">

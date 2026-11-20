@@ -4,7 +4,7 @@
     <h1 class="text-center">Ajouter un ouvrier</h1>
     <div class="card">
         <div class="card-body">
-            <form action="{{ route("ouvriers.store")}}" method="post" enctype="multipart/form-data">
+            <form action="{{ route("ouvrier.store")}}" method="post" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="mb-3">
@@ -124,7 +124,7 @@
         </div>
     </div>
     <div class="mt-4">
-        <a href="{{ route('ouvriers.index') }}" class="btn btn-secondary">
+        <a href="{{ route('ouvrier.index') }}" class="btn btn-secondary">
             Retour
         </a>
     </div>

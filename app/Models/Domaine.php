@@ -2,20 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Concerns\HasUuid;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Domaine extends Model
 {
-    use SoftDeletes, HasUuid;
-    protected $fillable =[
-        'nom'
-    ];
+    use HasFactory, HasUuid;
+    protected $table = 'domaines';
 
-    public function metier(){
+    protected $fillable = ['name'];
+    
+    public function metiers()
+    {
         return $this->hasMany(Metier::class);
     }
-    public function ouvriers(){
-        return $this->hasMany(Ouvrier::class);
+
+    public function ouvrier()
+    {
+        return $this->belongsToMany(Ouvrier::class );
     }
 }

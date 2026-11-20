@@ -78,7 +78,7 @@
             Retour
         </a>
 
-        <a href="{{ route('ouvriers.edit', $ouvrier) }}" class="btn btn-warning">
+        <a href="{{ route('ouvrier.edit', $ouvrier) }}" class="btn btn-warning">
 
             Modifier
 

@@ -16,10 +16,17 @@
             Domaines
         </a>
     </div>
+    
 
     <div class="mt-4">
         <a href="{{ route('metier.index') }}" class="btn btn-secondary">
             Metiers
+        </a>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ route('country.index') }}" class="btn btn-secondary">
+            Country
         </a>
     </div>
 

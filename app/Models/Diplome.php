@@ -12,7 +12,7 @@ class Diplome extends Model
     use HasFactory, HasUuid;
     protected $table = 'diplomes';
 
-    protected $fillable = ['nom'];
+    protected $fillable = ['name'];
     public function ouvrier()
     {
         return $this->belongsToMany(Ouvrier::class );
