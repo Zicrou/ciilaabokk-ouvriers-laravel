@@ -125,6 +125,36 @@
     height: 8rem;
 }
 
+.worker-profile-header {
+    border: 1px solid #e1edf8;
+    background: linear-gradient(125deg, #eaf5ff 0%, #f7fbff 65%, #eef8ff 100%);
+}
+
+.worker-profile-initial {
+    width: 6rem;
+    height: 6rem;
+    background: #fff;
+    box-shadow: 0 0.5rem 1.25rem rgb(20 37 63 / 10%);
+    color: #1676c5;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.worker-skill-card {
+    border: 1px solid #e7eef6;
+    background: #fbfdff;
+}
+
+.worker-empty-state {
+    border: 1px dashed #cbd9e8;
+    background: #f8fbff;
+}
+
+.worker-contact-line + .worker-contact-line {
+    border-top: 1px solid #e8eef5;
+    padding-top: 1rem;
+}
+
 .directory-details-list {
     display: grid;
     gap: 1rem;
