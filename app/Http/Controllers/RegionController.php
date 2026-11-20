@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\Models\Region;
-use \App\Models\Country;
+use \App\Models\Countries;
 class RegionController extends Controller
 {
     /**
@@ -23,8 +23,9 @@ class RegionController extends Controller
      */
     public function create()
     {
-        return view('ouvriers.regions.create', [
-            'countries' => \App\Models\Countries::pluck('name', 'id')
+        return view('ouvriers.regions.form', [
+            'countries' => Countries::pluck('nom', 'id'),
+            'region' => new Region()
         ]);
     }
 
@@ -34,11 +35,11 @@ class RegionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'nom' => ['required', 'string', 'max:255'],
             'country_id' => ['uuid','required', 'exists:countries,id'],
         ]);
 
-        Region::create($request->only('name', 'country_id'));
+        Region::create($request->only('nom', 'country_id'));
 
         return redirect()->route('region.index')->with('success', 'Region created successfully.');
     }
@@ -57,7 +58,11 @@ class RegionController extends Controller
     public function edit(string $id)
     {
         $region = Region::findOrFail($id);
-        return view('ouvriers.regions.edit', ['region' => $region, 'countries' => \App\Models\Countries::all()]);
+        $countries = Countries::pluck('nom', 'id');
+        return view('ouvriers.regions.form', [
+            'region' => $region, 
+            'countries' => $countries,
+        ]);
     }
 
     /**
@@ -66,12 +71,12 @@ class RegionController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],            
+            'nom' => ['required', 'string', 'max:255'],            
             'country_id' => ['uuid','required', 'exists:countries,id'],
         ]);
 
         $region = Region::findOrFail($id);
-        $region->update($request->only('name', 'country_id'));
+        $region->update($request->only('nom', 'country_id'));
 
         return redirect()->route('region.index')->with('success', 'Region updated successfully.');
     }

@@ -35,7 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/metier', [OuvrierController::class, 'metiersByDomaine']);
     Route::get('/api/departement', [OuvrierController::class, 'departementsByRegion']);
     Route::resource('ouvrier', OuvrierController::class)->except(['index', 'show']);
-    Route::resource('diplome', DiplomeController::class);
     
     });
     Route::get('ouvrier/rechercher', [OuvrierController::class, 'rechercher'])->name('ouvrier.rechercher');

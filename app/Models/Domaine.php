@@ -12,7 +12,7 @@ class Domaine extends Model
     use HasFactory, HasUuid;
     protected $table = 'domaines';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['nom'];
     
     public function metiers()
     {

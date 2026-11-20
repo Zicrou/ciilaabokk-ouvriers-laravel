@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Countries;
-use \App\Models\Countries;
 class CountryController extends Controller
 {
     /**
@@ -22,7 +21,8 @@ class CountryController extends Controller
      */
     public function create()
     {
-        return view('ouvriers.countries.create');
+        $country = new Countries();
+        return view('ouvriers.countries.form', ['country' => $country]);
     }
 
     /**
@@ -53,7 +53,7 @@ class CountryController extends Controller
     public function edit(string $id)
     {
         $country = Countries::findOrFail($id);
-        return view('ouvriers.countries.edit', compact('country'));
+        return view('ouvriers.countries.form', compact('country'));
     }
 
     /**

@@ -15,8 +15,8 @@
                 <tbody>
                     @foreach($regions as $region)
                         <tr>
-                            <td>{{ $region->name }}</td> 
-                            <td>{{ $region->country->name }}</td>
+                            <td>{{ $region->nom }}</td> 
+                            <td>{{ $region->country->nom }}</td>
                             <td class="text-end">
                                 <a href="{{ route("region.edit", $region->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <form action="{{ route("region.destroy", $region->id) }}" method="post" style="display: inline;">

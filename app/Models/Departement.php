@@ -12,7 +12,7 @@ class Departement extends Model
     use HasFactory, HasUuid;
     protected $table = 'departements';
 
-    protected $fillable = ['name', 'region_id'];
+    protected $fillable = ['nom', 'region_id'];
 
     public function region()
     {

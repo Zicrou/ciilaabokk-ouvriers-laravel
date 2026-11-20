@@ -49,21 +49,6 @@ class Ouvrier extends Model
         return $this->belongsToMany(Metier::class );
     }
 
-    public function portfolios()
-    {
-        return $this->hasMany(Portfolio::class);
-    }
-
-    public function diplomes()
-    {
-        return $this->belongsToMany(Diplome::class);
-    }
-
-    public function entrepriseS()
-    {
-        return $this->belongsToMany(Entreprise::class);
-    }
-
     public function user(){
         return $this->belongsTo(User::class);
     }
