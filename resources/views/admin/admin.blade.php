@@ -49,12 +49,5 @@
                 Departement
             </a>
         </div>
-        
-
-        <div class="mt-4">
-            <a href="{{ route('diplome.index') }}" class="btn btn-secondary">
-                Diplome
-            </a>
-        </div>
     @endif
 @endsection
