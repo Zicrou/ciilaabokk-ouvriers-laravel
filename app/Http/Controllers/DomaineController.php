@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use \App\Models\Domaine;
 class DomaineController extends Controller
 {
     /**
@@ -12,7 +12,7 @@ class DomaineController extends Controller
     public function index()
     {
         return view('ouvriers.domaines.index', [
-            'domaines' => \App\Models\Domaine::all()
+            'domaines' => Domaine::all()
         ]);
     }
 
@@ -21,7 +21,8 @@ class DomaineController extends Controller
      */
     public function create()
     {
-        return view('ouvriers.domaines.create');
+        $domaine = new Domaine();
+        return view('ouvriers.domaines.form', ['domaine' => $domaine]);
     }
 
     /**
@@ -30,10 +31,10 @@ class DomaineController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'nom' => ['required', 'string', 'max:255'],
         ]);
 
-        \App\Models\Domaine::create($request->only('name'));
+        Domaine::create($request->only('nom'));
 
         return redirect()->route('domaine.index')->with('success', 'Domaine created successfully.');
     }
@@ -51,8 +52,8 @@ class DomaineController extends Controller
      */
     public function edit(string $id)
     {
-        $domaine = \App\Models\Domaine::findOrFail($id);
-        return view('ouvriers.domaines.edit', compact('domaine'));
+        $domaine = Domaine::findOrFail($id);
+        return view('ouvriers.domaines.form', compact('domaine'));
     }
 
     /**
@@ -61,10 +62,10 @@ class DomaineController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'nom' => ['required', 'string', 'max:255'],
         ]);
-        $domaine = \App\Models\Domaine::findOrFail($id);
-        $domaine->update($request->only('name'));
+        $domaine = Domaine::findOrFail($id);
+        $domaine->update($request->only('nom'));
 
         return redirect()->route('domaine.index')->with('success', 'Domaine updated successfully.');
     }
@@ -74,7 +75,7 @@ class DomaineController extends Controller
      */
     public function destroy(string $id)
     {
-        $domaine = \App\Models\Domaine::findOrFail($id);
+        $domaine = Domaine::findOrFail($id);
         $domaine->delete();
 
         return redirect()->route('domaine.index')->with('success', 'Domaine deleted successfully.');

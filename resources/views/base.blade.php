@@ -44,7 +44,7 @@
 
                     <div class="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2 py-3 py-lg-0">
                         @auth
-                            <span class="text-secondary small px-lg-2">{{ auth()->user()->name }}</span>
+                            <span class="text-secondary small px-lg-2">{{ auth()->user()->nom }}</span>
                             <a href="{{ route('admin') }}" class="btn btn-outline-primary">Mon espace</a>
                             <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">Dashboard</a>
                         @else
