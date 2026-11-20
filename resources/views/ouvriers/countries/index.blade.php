@@ -7,14 +7,14 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Nom</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($countries as $country)
                         <tr>
-                            <td>{{ $country->name }}</td> 
+                            <td>{{ $country->nom }}</td> 
                             <td class="text-end">
                                 <a href="{{ route("country.edit", $country->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <form action="{{ route("country.destroy", $country->id) }}" method="post" style="display: inline;">

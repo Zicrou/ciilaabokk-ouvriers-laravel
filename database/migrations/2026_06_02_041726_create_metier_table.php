@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('metiers', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->string('nom');
            $table->uuid('domaine_id');
            $table->foreign('domaine_id')
            ->references('id')

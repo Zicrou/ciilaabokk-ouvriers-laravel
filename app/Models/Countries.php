@@ -12,7 +12,7 @@ class Countries extends Model
     use HasFactory, HasUuid; 
     protected $table = 'countries';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['nom'];
 
     public function regions()
     {

@@ -28,21 +28,10 @@ class OuvrierFormRequest extends FormRequest
             'departement_id' => 'required', 'exists:departements,id',
             'metiers' => ['required', 'array', 'exists:metiers,id'],
             'domaines' => ['required', 'array', 'exists:domaines,id'],
-            'date_of_birth' => ['required', 'date'],
-            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4048'], 
             'phone_number' => ['required', 'string', 'max:255', 'unique:ouvriers,phone_number'],
-            'email' => ['nullable', 'email', 'max:255', 'unique:ouvriers,email'],
             'address' => ['required', 'string', 'max:255'],
             'phone_number_2' => ['nullable', 'string', 'max:255'],
-            'photo_cni' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:4048'], 
-            'numero_cni' => ['nullable', 'string', 'max:255', 'unique:ouvriers,numero_cni'],
-            'annees_experience' => ['numeric', 'max:255'],
             'user_id' => ['uuid','nullable', 'exists:users,id'],
-            'images.*' => ['nullable','image','mimes:jpeg,png,jpg,webp','max:2048'],
-            'diplomes' => ['array', 'nullable'],
-            'diplomes.*' => ['exists:diplomes,id'],
-            'entreprises' => ['nullable', 'array'],
-            'entreprises.*' => ['nullable', 'string'],
         ];
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('departements', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->string('nom');
             $table->uuid('region_id');
             $table->foreign('region_id')
                 ->references('id')

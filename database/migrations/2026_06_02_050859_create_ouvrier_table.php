@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ouvriers', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->string('nom');
             
             $table->uuid('region_id');
             $table->foreign('region_id')
@@ -30,17 +30,15 @@ return new class extends Migration
                 ->references('id')
                 ->on('departements')
                 ->onDelete('cascade');
-            $table->string('phone_number')->unique();
-            $table->string('email')->unique()->nullable();
+            $table->string('telephone')->unique();
             $table->string('address')->nullable(false);
-            $table->date('date_of_birth')->nullable();
-            $table->string('phone_number_2')->nullable()->nullable();
-            $table->string('photo')->nullable();
-            $table->string('photo_cni')->nullable();
-            $table->string('numero_cni')->nullable();
-            $table->integer('annees_experience')->nullable();
-            $table->string("entreprises")->nullable();
-            // $table->uuid('user_id')->nullable();
+            $table->string('telephone_2')->nullable()->nullable();
+            $table->uuid('user_id');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+            $table->string('role');
             $table->timestamps();
         });
     }
