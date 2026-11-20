@@ -8,7 +8,7 @@
         <a href="{{ route('ouvrier.index') }}" class="btn btn-secondary">
             Liste ouvriers
         </a>
-        @if ($ouvrierExist)
+        @if (!$ouvrierExist)
             <a href="{{ route('ouvrier.create') }}" class="btn btn-secondary mx-5">
                 Créer ouvrier
             </a>
