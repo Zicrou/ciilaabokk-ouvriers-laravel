@@ -105,7 +105,7 @@
                                 <a href="{{ route('ouvrier.create') }}" class="btn btn-link text-decoration-none">Ajouter un profil</a>
                             @endauth
                             <a href="mailto:aazseck@gmail.com" class="btn btn-link text-decoration-none">
-                                Me contacter · aazseck@gmail.com
+                                Me contacter · aazseck@gmail.com · aazseck2@gmail.com
                             </a>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
         <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
             <a href="{{ route('accueil') }}" class="text-dark fw-semibold text-decoration-none">CiiLaaBokK</a>
             <span class="text-secondary small">L’annuaire des savoir-faire locaux.</span>
-            <a href="mailto:aazseck@gmail.com" class="small text-decoration-none">aazseck@gmail.com</a>
+            <a href="mailto:aazseck@gmail.com" class="small text-decoration-none">aazseck@gmail.com/aazseck2@gmail.com</a>
         </div>
     </footer>
 
