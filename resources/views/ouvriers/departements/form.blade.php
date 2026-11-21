@@ -15,7 +15,7 @@
                     <input type="text" name="nom" id="nom" class="form-control" value="{{ $departement->nom }}" required>
                 </div>
                 <div class="mb-3">
-                    <label for="region_id" class="form-label">Pays</label>
+                    <label for="region_id" class="form-label">Région</label>
                     <select name="region_id" id="region_id" class="form-control" required>
                         <option value="">Sélectionnez une région</option>
                         @foreach($regions as $k => $v)
