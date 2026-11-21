@@ -192,12 +192,18 @@ public function departementsByRegion(Request $request)
     {
         $dataOuvrier = $request->validated();
         $ouvrier = Ouvrier::findOrFail($id);
-        
-        $ouvrier->update($request->only('name', 'country_id', 'region_id', 'departement_id', 'date_of_birth', 'phone_number', 'email', 'address', 'phone_number_2', 'numero_cni', 'photo', 'photo_cni','annees_experience', 'user_id'));
+        if($request->user()->id != $ouvrier->user_id){
+            return ["message" => "vous n'êtes pas le prpopriétiare"];
+        }
+        $ouvrier->update($request->only('nom', 'country_id', 'region_id', 'departement_id', 'telephone', 'address', 'telephone_2', 'user_id'));
         $ouvrier->metiers()->sync($dataOuvrier['metiers']);
         $ouvrier->domaines()->sync($dataOuvrier['domaines']);
         
-        return redirect()->route('ouvrier.show', $ouvrier->id)->with('success', 'Ouvrier updated successfully.');
+        return [
+            'ouvrier' => $ouvrier,
+            'success' => true,
+            'message' => 'Ouvrier updated successfully'
+        ];
     }
     /**
      * Remove the specified resource from storage.
