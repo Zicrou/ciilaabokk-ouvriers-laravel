@@ -22,9 +22,10 @@ return new class extends Migration
                 ->references('id')
                 ->on('domaines')
                 ->onDelete('cascade');
-                
+            
             $table->primary(['ouvrier_id', 'domaine_id']);
             $table->timestamps();
+            
         });
     }
 

@@ -20,6 +20,7 @@ return new class extends Migration
                 ->on('regions')
                 ->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
