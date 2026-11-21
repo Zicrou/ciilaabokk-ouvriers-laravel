@@ -149,17 +149,18 @@ public function departementsByRegion(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Request $request)
     {
         $ouvrier = Ouvrier::with([
-            'metiers.domaine',
+            'metiers',
+            'domaines',
             'region',
             'departement',
             'country',
-        ])->findOrFail($id);
+        ])->where('user_id', $request->user()->id)->get();
         // dd($ouvrier);        
         
-        return view('ouvriers.ouvriers.show', compact('ouvrier'));
+        return ['ouvrier' => $ouvrier];
     }
 
     /**
