@@ -16,7 +16,7 @@
         <img
             src="{{ asset('images/image_98761e53.jpg') }}"
             alt="Plusieurs ouvriers réunis sur un chantier"
-            class="hero-image"
+            class="hero-image hero"
             width="1376"
             height="768"
         >
