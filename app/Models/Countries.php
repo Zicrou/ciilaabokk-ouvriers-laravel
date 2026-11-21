@@ -7,9 +7,11 @@ use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use \App\Models\Region;
+use Laravel\Sanctum\HasApiTokens;
+
 class Countries extends Model
 {
-    use HasFactory, HasUuid; 
+    use HasFactory, HasUuid, HasApitokens, softDeletes; 
     protected $table = 'countries';
 
     protected $fillable = ['nom'];

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class Ouvrier extends Model
 {
-    use HasFactory, HasUuid; 
+    use HasFactory, HasUuid, SoftDeletes, HasApiTokens; 
     protected $table = 'ouvriers';
 
 
