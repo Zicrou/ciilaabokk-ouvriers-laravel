@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Laravel\Sanctum\HasApiTokens;
 class Metier extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasApiTokens, SoftDeletes;
     protected $table = 'metiers';
 
     protected $fillable = ['nom', 'domaine_id'];

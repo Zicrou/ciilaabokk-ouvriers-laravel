@@ -6,10 +6,11 @@ use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class Domaine extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasApiTokens, SoftDeletes;
     protected $table = 'domaines';
 
     protected $fillable = ['nom'];
