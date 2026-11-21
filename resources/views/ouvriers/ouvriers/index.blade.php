@@ -12,11 +12,12 @@
             request('metier_id'),
         ])->filter(fn ($value) => is_string($value) && $value !== '');
     @endphp
+    // hero section
     <section class="hero px-4 py-5 px-lg-5" aria-labelledby="directory-title">
         <img
             src="{{ asset('images/image_98761e53.jpg') }}"
             alt="Plusieurs ouvriers réunis sur un chantier"
-            class="hero-image hero"
+            class="hero-image"
             width="1376"
             height="768"
         >
