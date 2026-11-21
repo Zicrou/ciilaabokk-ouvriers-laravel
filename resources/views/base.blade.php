@@ -78,7 +78,7 @@
         @if(request()->routeIs('accueil'))
             <section class="home-hero rounded-4 p-4 p-lg-5 mb-4">
                 <div class="row align-items-center g-4 g-lg-5">
-                    <div class="col-12 col-lg-7">
+                    <div class="col-12 col-lg-6">
                         <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis mb-3">LES SAVOIR-FAIRE LOCAUX</span>
                         <h1 class="display-5 fw-bold mb-3">Le bon professionnel, au bon endroit.</h1>
                         <p class="lead text-secondary mb-4">
@@ -104,46 +104,24 @@
                             @auth
                                 <a href="{{ route('ouvrier.create') }}" class="btn btn-link text-decoration-none">Ajouter un profil</a>
                             @endauth
+                            <a href="mailto:aazseck@gmail.com" class="btn btn-link text-decoration-none">
+                                Me contacter · aazseck@gmail.com
+                            </a>
                         </div>
                     </div>
 
-                    <div class="col-12 col-lg-5">
-                        <div class="home-feature-card bg-white rounded-4 shadow-sm p-4">
-                            <div class="d-flex align-items-center gap-3 mb-4">
-                                <span class="home-feature-icon rounded-3 bg-primary-subtle text-primary d-flex align-items-center justify-content-center" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 20a7 7 0 0 0-14 0m7-18a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"></path>
-                                    </svg>
-                                </span>
-                                <div>
-                                    <p class="text-secondary small mb-1">Un annuaire simple</p>
-                                    <h2 class="h5 fw-semibold mb-0">Des profils, des compétences, un contact</h2>
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-3">
-                                <div class="d-flex gap-3">
-                                    <span class="home-step-number">1</span>
-                                    <div>
-                                        <h3 class="h6 fw-semibold mb-1">Trouvez un métier</h3>
-                                        <p class="text-secondary small mb-0">Cherchez par nom, téléphone ou filtrez l’annuaire.</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex gap-3">
-                                    <span class="home-step-number">2</span>
-                                    <div>
-                                        <h3 class="h6 fw-semibold mb-1">Consultez les profils</h3>
-                                        <p class="text-secondary small mb-0">Découvrez les métiers et l’expérience des ouvriers.</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex gap-3">
-                                    <span class="home-step-number">3</span>
-                                    <div>
-                                        <h3 class="h6 fw-semibold mb-1">Prenez contact</h3>
-                                        <p class="text-secondary small mb-0">Retrouvez les coordonnées directement sur le profil.</p>
-                                    </div>
-                                </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="home-hero-visual">
+                            <img
+                                src="{{ asset('images/image_98761e53.jpg') }}"
+                                alt="Illustration d’un artisan présentant son savoir-faire"
+                                class="img-fluid rounded-4"
+                                width="900"
+                                height="680"
+                            >
+                            <div class="home-hero-caption bg-white rounded-3 shadow-sm px-3 py-2">
+                                <span class="text-primary fw-semibold">CiiLaaBokK</span>
+                                <span class="text-secondary small d-block">Les savoir-faire locaux à portée de main</span>
                             </div>
                         </div>
                     </div>
@@ -185,6 +163,7 @@
         <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
             <a href="{{ route('accueil') }}" class="text-dark fw-semibold text-decoration-none">CiiLaaBokK</a>
             <span class="text-secondary small">L’annuaire des savoir-faire locaux.</span>
+            <a href="mailto:aazseck@gmail.com" class="small text-decoration-none">aazseck@gmail.com</a>
         </div>
     </footer>
 

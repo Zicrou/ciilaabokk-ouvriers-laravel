@@ -12,22 +12,32 @@
             request('metier_id'),
         ])->filter(fn ($value) => is_string($value) && $value !== '');
     @endphp
+    <section class="hero px-4 py-5 px-lg-5" aria-labelledby="directory-title">
+        <img
+            src="{{ asset('images/image_98761e53.jpg') }}"
+            alt="Plusieurs ouvriers réunis sur un chantier"
+            class="hero-image"
+            width="1376"
+            height="768"
+        >
+        <div class="hero-content">
+            <span class="badge rounded-pill bg-white text-primary fw-semibold mb-3">ANNUAIRE DES SAVOIR-FAIRE</span>
+            <h1 id="directory-title" class="display-4 fw-bold mb-3">Trouvez le bon ouvrier</h1>
+            <p class="lead mb-4">Explorez les profils et les savoir-faire près de chez vous.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="#search-title" class="btn bg-color text-blue fw-semibold text-nowrap px-3 px-sm-4 py-2">
+                    Rechercher un ouvrier
+                </a>
+                @auth
+                    <a href="{{ route('ouvrier.create') }}" class="btn btn-outline-primary px-4 py-2">
+                        Ajouter un ouvrier
+                    </a>
+                @endauth
+            </div>
+        </div>
+    </section>
 
     <div class="directory-page pb-5">
-        <header class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-3 mb-4">
-            <div>
-                <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis mb-2">ANNUAIRE</span>
-                <h1 class="display-6 fw-bold mb-2">Trouvez le bon ouvrier</h1>
-                <p class="text-secondary mb-0">Explorez les profils et les savoir-faire près de chez vous.</p>
-            </div>
-
-            @auth
-                <a href="{{ route('ouvrier.create') }}" class="btn bg-color text-white px-4 py-2">
-                    <span aria-hidden="true" class="me-1">+</span>
-                    Ajouter un ouvrier
-                </a>
-            @endauth
-        </header>
 
         <section class="card border-0 shadow-sm rounded-4 mb-4" aria-labelledby="search-title">
             <div class="card-body p-3 p-lg-4">
