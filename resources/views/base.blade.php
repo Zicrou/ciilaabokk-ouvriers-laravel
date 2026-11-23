@@ -107,6 +107,9 @@
                             <a href="mailto:aazseck@gmail.com" class="btn btn-link text-decoration-none">
                                 Me contacter · aazseck@gmail.com · aazseck2@gmail.com
                             </a>
+                            <a href="tel:{{ preg_replace('/[^0-9+]/', '', +221781026837) }}" class="btn bg-color text-white px-4">
+                                +221 78102 68 37
+                            </a>
                         </div>
                     </div>
 
@@ -164,6 +167,9 @@
             <a href="{{ route('accueil') }}" class="text-dark fw-semibold text-decoration-none">CiiLaaBokK</a>
             <span class="text-secondary small">L’annuaire des savoir-faire locaux.</span>
             <a href="mailto:aazseck@gmail.com" class="small text-decoration-none">aazseck@gmail.com/aazseck2@gmail.com</a>
+            <a href="tel:{{ preg_replace('/[^0-9+]/', '', +221781026837) }}" class="btn bg-color text-white px-4">
+                +221 78102 68 37
+            </a>
         </div>
     </footer>
 
