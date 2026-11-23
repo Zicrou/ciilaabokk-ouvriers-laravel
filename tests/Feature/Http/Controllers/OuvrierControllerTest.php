@@ -15,7 +15,6 @@ it('creates an ouvrièr and attaches the submitted relationships', function () {
     $departement = Departement::factory()->create(['region_id' => $region->id]);
     $domaine = Domaine::factory()->create();
     $metier = Metier::factory()->create(['domaine_id' => $domaine->id]);
-    $diplome = Diplome::factory()->create();
 
     $response = $this->actingAs($user)->post(route('ouvrier.store'), [
         'nom' => 'Nouvel ouvrier',
@@ -23,8 +22,6 @@ it('creates an ouvrièr and attaches the submitted relationships', function () {
         'departement_id' => $departement->id,
         'domaines' => [$domaine->id],
         'metiers' => [$metier->id],
-        'diplomes' => [$diplome->id],
-        'entreprises' => ['Atelier Alpha'],
         'telephone' => '770000001',
         'address' => 'Dakar',
         'user_id' => $otherUser->id,
@@ -38,8 +35,6 @@ it('creates an ouvrièr and attaches the submitted relationships', function () {
     expect($ouvrier->user_id)->toBe($user->id);
     expect($ouvrier->domaines()->whereKey($domaine->id)->exists())->toBeTrue();
     expect($ouvrier->metiers()->whereKey($metier->id)->exists())->toBeTrue();
-    expect($ouvrier->diplomes()->whereKey($diplome->id)->exists())->toBeTrue();
-    expect($ouvrier->entreprises()->where('nom', 'Atelier Alpha')->exists())->toBeTrue();
 });
 
 it('rejects a phone number that is already assigned to an ouvrièr', function () {

@@ -19,7 +19,7 @@ class AuthController extends Controller
        
         $fields['role'] = "user";
         $user = User::create($fields);
-        $token = $user->createToken($request->name);
+        $token = $user->createToken($request->nom);
         return [
             'user' => $user, 
             'token' => $token->plainTextToken
@@ -28,14 +28,13 @@ class AuthController extends Controller
 
     public function login(LoginFormRequest $request){
         $fields = $request->validated();
-        $userExists = User::where('email', $request->login)->orWhere('phone', $request->login)->first();
+        $userExists = User::where('email', $request->login)->orWhere('telephone', $request->login)->first();
 
         if(!$userExists || !Hash::check($request->password, $userExists->password)){
-            return ['message' => 'The provided credentials are incorrect.', "data" => $fields];
+            return ['message' => 'login/mot de passe incorrect.', "data" => $fields];
         }
     
-        $token = $userExists->createToken($userExists->name);
-        $userExists->load('team');
+        $token = $userExists->createToken($userExists->nom);
         return [
             'user' => $userExists, 
             'token' => $token->plainTextToken,
