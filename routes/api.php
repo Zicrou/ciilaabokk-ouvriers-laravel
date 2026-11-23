@@ -14,7 +14,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (){
         // Ouvrier
         Route::post('/ouvrier', [OuvrierController::class, 'store'])->name('ouvrier.store');
         Route::put('/ouvrier/{ouvrier}', [OuvrierController::class, 'update'])->name('ouvrier.update');
+        Route::get('/ouvrier/rechercher', [OuvrierController::class, 'rechercher'])->name('ouvrier.rechercher');
         Route::get('/ouvrier/{ouvrier}', [OuvrierController::class, 'show'])->name('ouvrier.show');
+        Route::get('/ouvrier/', [OuvrierController::class, 'index'])->name('ouvrier.index');
     });
         // Auth
     Route::post('register', [AuthController::class, 'register'])->name('register');

@@ -31,18 +31,19 @@ class OuvrierController extends Controller
         $ouvriers = Ouvrier::query()
         ->with([
         'metiers.domaine',
+        'domaines',
         'region',
         'departement',
         'country',
-    ])->paginate(10);
+    ])->get();
     
-        return view('ouvriers.ouvriers.index', [
+        return [
             'ouvriers' => $ouvriers,
             'departements' => $departements,
             'metiers' => $metiers,
             'regions' => $regions,
             'domaines' => $domaines
-        ]);
+        ];
     }
 
     /**
@@ -81,16 +82,6 @@ public function departementsByRegion(Request $request)
     {
         $query = Ouvrier::query();
 
-        $search = $request->query('search');
-
-        if (is_string($search) && trim($search) !== '') {
-            $search = trim($search);
-
-            $query->where(function ($query) use ($search) {
-                $query->where('nom', 'like', '%' . $search . '%')
-                    ->orWhere('telephone', 'like', '%' . $search . '%');
-            });
-        }
 
         if ($request->filled('domaine_id')) {
             $query->whereHas('domaines', function ($q) use ($request) {
@@ -119,13 +110,13 @@ public function departementsByRegion(Request $request)
             'region',
             'departement',
             'country',
-        ])->paginate(10);;
+        ])->get();
         $metiers = Metier::all();
         $departements = Departement::all();
         $regions = Region::all();
         $domaines = Domaine::all();
 
-        return view('ouvriers.ouvriers.index', ['ouvriers' => $ouvriers, 'departements' => $departements, 'metiers' => $metiers, 'regions' => $regions, 'domaines' => $domaines]);
+        return ['ouvriers' => $ouvriers, 'departements' => $departements, 'metiers' => $metiers, 'regions' => $regions, 'domaines' => $domaines];
     }
 
     /**
@@ -214,6 +205,6 @@ public function departementsByRegion(Request $request)
         $ouvrier = Ouvrier::findOrFail($id);
         $ouvrier->delete();
 
-        return redirect()->route('ouvrier.index')->with('success', 'Ouvrier deleted successfully.');
+        return ['success' => true, 'message' => 'Ouvrier deleted successfully.'];
     }
 }
