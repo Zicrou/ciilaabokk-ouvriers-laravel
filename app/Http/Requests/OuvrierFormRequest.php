@@ -25,13 +25,15 @@ class OuvrierFormRequest extends FormRequest
             'nom' => ['required', 'string', 'max:255'],
             'country_id' => ['required', 'exists:countries,id'],
             'region_id' => ['required', 'exists:regions,id'],
-            'departement_id' => 'required', 'exists:departements,id',
+            'departement_id' => ['required', 'exists:departements,id'],
             'metiers' => ['required', 'array', 'exists:metiers,id'],
             'domaines' => ['required', 'array', 'exists:domaines,id'],
             'telephone' => ['required', 'string', 'max:255', 'unique:ouvriers,telephone'],
             'address' => ['required', 'string', 'max:255'],
             'telephone_2' => ['nullable', 'string', 'unique:ouvriers,telephone_2'],
             'user_id' => ['uuid','nullable', 'exists:users,id'],
+            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180,180'],
         ];
     }
 }

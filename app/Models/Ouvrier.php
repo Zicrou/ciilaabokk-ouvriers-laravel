@@ -24,6 +24,13 @@ class Ouvrier extends Model
         'address',
         'telephone_2',
         'user_id',
+        'latitude',
+        'longitude',
+    ];
+
+    protected $hidden = [
+        'latitude',
+        'longitude',
     ];
 
     public function country()
