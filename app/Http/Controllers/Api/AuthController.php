@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\api\v1\LoginFormRequest;
 use App\Http\Requests\api\v1\RegisterFormRequest;
 use Laravel\Sanctum\PersonalAccessToken;
-use App\Models\Team;
+use App\Models\Ouvrier;
 
 class AuthController extends Controller 
 {
@@ -33,12 +33,13 @@ class AuthController extends Controller
         if(!$userExists || !Hash::check($request->password, $userExists->password)){
             return ['message' => 'login/mot de passe incorrect.', "data" => $fields];
         }
-    
+        $ouvrier = Ouvrier::where('user_id', $userExists->id)->with(['metiers', 'domaines', 'region', 'departement', 'country'])->first();
+
         $token = $userExists->createToken($userExists->nom);
         return [
             'user' => $userExists, 
             'token' => $token->plainTextToken,
-            
+            'ouvrier' => $ouvrier
         ];
     }
 

@@ -20,8 +20,8 @@ use App\Http\Controllers\Controller;
 
 class OuvrierController extends Controller
 {
-    private const INITIAL_SEARCH_RADIUS_KM = 20;
-    private const SEARCH_RADIUS_STEP_KM = 20;
+    private const INITIAL_SEARCH_RADIUS_KM = 5;
+    private const SEARCH_RADIUS_STEP_KM = 5;
     private const MAX_SEARCH_RADIUS_KM = 100;
     private const EARTH_RADIUS_KM = 6371;
 
@@ -58,13 +58,13 @@ class OuvrierController extends Controller
     public function create()
     {
         
-        return view('ouvriers.ouvriers.create', [
+        return[
             'countries' => Countries::all(),
             'regions' => Region::with('country')->get(),
             'departements' => Departement::all(),
             'metiers' => Metier::pluck('nom', 'id'),
             'domaines' => Domaine::pluck('nom', 'id'),
-        ]);
+        ];
     }
 
     public function metiersByDomaine(Request $request)
