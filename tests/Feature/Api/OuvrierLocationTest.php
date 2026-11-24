@@ -80,3 +80,45 @@ test('location updates validate coordinate bounds', function () {
             'longitude' => -17.4,
         ])->assertJsonValidationErrors('latitude');
 });
+
+test('authenticated users can read their own location history incrementally', function () {
+    $user = User::factory()->create();
+    $region = Region::factory()->create();
+    $departement = Departement::factory()->create(['region_id' => $region->id]);
+    $worker = Ouvrier::create([
+        'nom' => 'Ouvrier suivi',
+        'country_id' => $region->country_id,
+        'region_id' => $region->id,
+        'departement_id' => $departement->id,
+        'user_id' => $user->id,
+        'telephone' => '77 800 00 03',
+        'address' => 'Dakar',
+    ]);
+
+    $this->mock(FirebaseOuvrierLocationWriter::class, function (MockInterface $mock) use ($worker) {
+        $mock->shouldReceive('read')
+            ->once()
+            ->withArgs(fn (Ouvrier $ouvrier, ?int $since) => $ouvrier->is($worker) && $since === 1795480000000)
+            ->andReturn([
+                'position' => [
+                    'latitude' => 14.7167,
+                    'longitude' => -17.4677,
+                    'updated_at_ms' => 1795480020000,
+                ],
+                'positions' => [
+                    [
+                        'id' => '-Oabc123',
+                        'latitude' => 14.7167,
+                        'longitude' => -17.4677,
+                        'recorded_at_ms' => 1795480020000,
+                    ],
+                ],
+            ]);
+    });
+
+    $this->actingAs($user, 'sanctum')
+        ->getJson('/api/v1/ouvrier/location?since=1795480000000')
+        ->assertOk()
+        ->assertJsonPath('positions.0.id', '-Oabc123')
+        ->assertJsonPath('position.latitude', 14.7167);
+});

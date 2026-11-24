@@ -10,6 +10,21 @@ use Illuminate\Http\Request;
 
 class OuvrierLocationController extends Controller
 {
+    public function index(Request $request, FirebaseOuvrierLocationWriter $locationWriter): JsonResponse
+    {
+        $filters = $request->validate([
+            'since' => ['sometimes', 'nullable', 'integer', 'min:0'],
+        ]);
+
+        $ouvrier = $request->user()->ouvrier;
+        abort_unless($ouvrier instanceof Ouvrier, 404, 'Aucune fiche ouvrier associée à ce compte.');
+
+        return response()->json($locationWriter->read(
+            $ouvrier,
+            isset($filters['since']) ? (int) $filters['since'] : null,
+        ));
+    }
+
     public function store(Request $request, FirebaseOuvrierLocationWriter $locationWriter): JsonResponse
     {
         $coordinates = $request->validate([

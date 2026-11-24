@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\OuvrierLocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->name('api.v1.')->group(function (){
+Route::prefix('v1')->name('api.v1.')->group(function () {
 
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -14,6 +14,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (){
 
     Route::middleware('auth:sanctum')->group(function () {
         // Ouvrier
+        Route::get('/ouvrier/location', [OuvrierLocationController::class, 'index'])->name('ouvrier.location.index');
         Route::post('/ouvrier/location', [OuvrierLocationController::class, 'store'])->name('ouvrier.location.store');
         Route::post('/ouvrier', [OuvrierController::class, 'store'])->name('ouvrier.store');
         Route::put('/ouvrier/{ouvrier}', [OuvrierController::class, 'update'])->name('ouvrier.update');
@@ -21,8 +22,8 @@ Route::prefix('v1')->name('api.v1.')->group(function (){
         Route::get('/ouvrier/create', [OuvrierController::class, 'create'])->name('ouvrier.create');
         Route::get('/ouvrier/{ouvrier}', [OuvrierController::class, 'show'])->name('ouvrier.show');
         Route::get('/ouvrier/', [OuvrierController::class, 'index'])->name('ouvrier.index');
-        });
-        // Auth
+    });
+    // Auth
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
