@@ -20,9 +20,9 @@ use App\Http\Controllers\Controller;
 
 class OuvrierController extends Controller
 {
-    private const INITIAL_SEARCH_RADIUS_KM = 5;
+    private const INITIAL_SEARCH_RADIUS_KM = 1;
     private const SEARCH_RADIUS_STEP_KM = 5;
-    private const MAX_SEARCH_RADIUS_KM = 100;
+    private const MAX_SEARCH_RADIUS_KM = 25;
     private const EARTH_RADIUS_KM = 6371;
 
     /**
